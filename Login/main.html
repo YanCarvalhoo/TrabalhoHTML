@@ -1,0 +1,236 @@
+<!-- =============================== -->
+<!-- PAINEL DIREITO: CONTEÚDO DINÂMICO -->
+<!-- Renderizado via login.js (showPanel) -->
+<!-- =============================== -->
+
+
+<!-- =============================== -->
+<!-- PAINEL: LOGIN -->
+<!-- =============================== -->
+<div id="panel-login" class="login-panel active">
+
+    <!-- TÍTULO -->
+    <div class="login-title">Bem-vindo de volta</div>
+    <div class="login-sub">Faça login para acessar o painel</div>
+
+    <!-- ALERTA (SUCESSO / ERRO) -->
+    <div class="alert-msg" id="alertMsg"></div>
+
+    <!-- CAMPO: USUÁRIO -->
+    <div class="form-group">
+        <label for="inputUsuario">Usuário</label>
+        <input
+            type="text"
+            id="inputUsuario"
+            placeholder="Seu nome de usuário"
+            autocomplete="username"
+            aria-required="true"
+            aria-describedby="erroUsuario"
+        >
+        <div class="field-error" id="erroUsuario">
+            Por favor, informe seu usuário.
+        </div>
+    </div>
+
+    <!-- CAMPO: SENHA -->
+    <div class="form-group">
+        <label for="inputSenha">Senha</label>
+        <input
+            type="password"
+            id="inputSenha"
+            placeholder="Sua senha"
+            autocomplete="current-password"
+            aria-required="true"
+            aria-describedby="erroSenha"
+        >
+        <div class="field-error" id="erroSenha">
+            Por favor, informe sua senha.
+        </div>
+    </div>
+
+    <!-- LEMBRAR + RECUPERAR -->
+    <div class="remember-row">
+        <input type="checkbox" id="lembrarSenha" aria-label="Lembrar senha">
+        <label for="lembrarSenha">Lembrar senha</label>
+
+        <!-- Link para recuperar senha -->
+        <a href="#" class="link-recuperar" id="linkRecuperar">
+            Esqueci a senha
+        </a>
+    </div>
+
+    <!-- BOTÃO ENTRAR -->
+    <button class="btn-login" id="btnLogin" aria-label="Entrar no sistema">
+        Entrar no Sistema
+    </button>
+
+    <!-- CADASTRAR -->
+    <div class="login-footer-links">
+        Não tem conta?
+        <a href="#" id="linkCadastrar" class="link-acao">
+            Cadastre-se grátis
+        </a>
+    </div>
+
+    <!-- SOBRE O SISTEMA -->
+    <div class="sobre-sistema" aria-label="Sobre o sistema">
+        <details>
+            <summary>O que é o System Product?</summary>
+            <p>
+                <strong>System Product</strong> é uma plataforma de gestão de produtos
+                desenvolvida para simplificar o controle de estoque e preços em pequenos
+                e médios negócios. Com ele você cadastra, edita, visualiza e exclui
+                produtos de forma rápida — tudo salvo localmente no seu navegador.
+            </p>
+        </details>
+    </div>
+
+</div>
+
+
+<!-- =============================== -->
+<!-- PAINEL: CADASTRO -->
+<!-- =============================== -->
+<div id="panel-cadastro" class="login-panel">
+
+    <!-- TÍTULO -->
+    <div class="login-title">Criar Conta</div>
+    <div class="login-sub">Preencha os dados abaixo para se cadastrar</div>
+
+    <!-- ALERTA CADASTRO -->
+    <div class="alert-msg" id="alertCadastro"></div>
+
+    <!-- NOME COMPLETO -->
+    <div class="form-group">
+        <label for="cadNome">Nome Completo</label>
+        <input
+            type="text"
+            id="cadNome"
+            placeholder="Seu nome completo"
+            autocomplete="name"
+            aria-required="true"
+            aria-describedby="erroCadNome"
+        >
+        <div class="field-error" id="erroCadNome">
+            Por favor, informe seu nome.
+        </div>
+    </div>
+
+    <!-- USUÁRIO -->
+    <div class="form-group">
+        <label for="cadUsuario">Usuário</label>
+        <input
+            type="text"
+            id="cadUsuario"
+            placeholder="Escolha um nome de usuário"
+            autocomplete="username"
+            aria-required="true"
+            aria-describedby="erroCadUsuario"
+        >
+        <div class="field-error" id="erroCadUsuario">
+            Por favor, informe um nome de usuário.
+        </div>
+    </div>
+
+    <!-- EMAIL -->
+    <div class="form-group">
+        <label for="cadEmail">E-mail</label>
+        <input
+            type="email"
+            id="cadEmail"
+            placeholder="seu@email.com"
+            autocomplete="email"
+            aria-required="true"
+            aria-describedby="erroCadEmail"
+        >
+        <div class="field-error" id="erroCadEmail">
+            Informe um e-mail válido.
+        </div>
+    </div>
+
+    <!-- SENHA -->
+    <div class="form-group">
+        <label for="cadSenha">Senha</label>
+        <input
+            type="password"
+            id="cadSenha"
+            placeholder="Mínimo 6 caracteres"
+            autocomplete="new-password"
+            aria-required="true"
+            aria-describedby="erroCadSenha"
+        >
+        <div class="field-error" id="erroCadSenha">
+            A senha precisa ter ao menos 6 caracteres.
+        </div>
+    </div>
+
+    <!-- CONFIRMAR SENHA -->
+    <div class="form-group">
+        <label for="cadConfSenha">Confirmar Senha</label>
+        <input
+            type="password"
+            id="cadConfSenha"
+            placeholder="Repita sua senha"
+            autocomplete="new-password"
+            aria-required="true"
+            aria-describedby="erroCadConfSenha"
+        >
+        <div class="field-error" id="erroCadConfSenha">
+            As senhas não coincidem.
+        </div>
+    </div>
+
+    <!-- BOTÃO CADASTRAR -->
+    <button class="btn-login" id="btnCadastrar" aria-label="Criar conta">
+        Criar Conta
+    </button>
+
+    <!-- VOLTAR AO LOGIN -->
+    <div class="login-footer-links">
+        Já tem conta?
+        <a href="#" id="linkVoltarLogin" class="link-acao">Fazer Login</a>
+    </div>
+
+</div>
+
+
+<!-- =============================== -->
+<!-- PAINEL: RECUPERAR SENHA -->
+<!-- =============================== -->
+<div id="panel-recuperar" class="login-panel">
+
+    <!-- TÍTULO -->
+    <div class="login-title">Recuperar Senha</div>
+    <div class="login-sub">Informe seu e-mail cadastrado para receber as instruções</div>
+
+    <!-- ALERTA RECUPERAR -->
+    <div class="alert-msg" id="alertRecuperar"></div>
+
+    <!-- EMAIL -->
+    <div class="form-group">
+        <label for="recEmail">E-mail cadastrado</label>
+        <input
+            type="email"
+            id="recEmail"
+            placeholder="seu@email.com"
+            autocomplete="email"
+            aria-required="true"
+            aria-describedby="erroRecEmail"
+        >
+        <div class="field-error" id="erroRecEmail">
+            Informe um e-mail válido.
+        </div>
+    </div>
+
+    <!-- BOTÃO ENVIAR -->
+    <button class="btn-login" id="btnRecuperar" aria-label="Enviar instruções de recuperação">
+        Enviar Instruções
+    </button>
+
+    <!-- VOLTAR -->
+    <div class="login-footer-links">
+        Lembrou a senha?
+        <a href="#" id="linkVoltarLogin2" class="link-acao">Fazer Login</a>
+    </div>
+
+</div>

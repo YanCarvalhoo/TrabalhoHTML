@@ -1,0 +1,70 @@
+<!-- =============================== -->
+<!-- NAVBAR (MENU PRINCIPAL) -->
+<!-- =============================== -->
+<nav>
+
+    <!-- =============================== -->
+    <!-- LOGO / NOME DO SISTEMA -->
+    <!-- =============================== -->
+    <div class="logo">
+        <!-- Clique pode ser usado para voltar à home via JS -->
+        <a href="#" id="logoLink">System Product</a>
+    </div>
+
+
+    <!-- =============================== -->
+    <!-- MENU DE NAVEGAÇÃO -->
+    <!-- data-screen = usado no JS para trocar telas -->
+    <!-- =============================== -->
+    <ul>
+
+        <!-- HOME -->
+        <li>
+            <a href="#" data-screen="home" class="nav-link active">
+                Home
+            </a>
+        </li>
+
+        <!-- PRODUTOS -->
+        <li>
+            <a href="#" data-screen="produtos" class="nav-link">
+                Produtos
+            </a>
+        </li>
+
+        <!-- CADASTRAR -->
+        <li>
+            <a href="#" data-screen="cadastrar" class="nav-link">
+                Cadastrar
+            </a>
+        </li>
+
+    </ul>
+
+
+    <!-- =============================== -->
+    <!-- USUÁRIO LOGADO -->
+    <!-- Nome preenchido via JS (sessionStorage) -->
+    <!-- =============================== -->
+    <div class="nav-user" aria-label="Usuário logado">
+
+        <!-- AVATAR SIMBÓLICO -->
+        <span class="nav-avatar" aria-hidden="true">👤</span>
+
+        <!-- NOME DO USUÁRIO (preenchido pelo JS) -->
+        Olá, <span id="nomeUsuario">Visitante</span>
+
+        <!-- BOTÃO SAIR -->
+        <a
+            href="../Login/login.html"
+            class="btn-sair"
+            title="Sair do sistema"
+            aria-label="Sair do sistema"
+            onclick="sessionStorage.clear();"
+        >
+            Sair
+        </a>
+
+    </div>
+
+</nav>

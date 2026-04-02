@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+
+    <!-- CONFIGURAÇÕES BÁSICAS -->
+    <meta charset="UTF-8">
+    <title>Login | System Product</title>
+
+    <!-- RESPONSIVIDADE (IMPORTANTE PARA MOBILE) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- FONTES (GOOGLE FONTS) -->
+    <!-- Syne = títulos / DM Sans = textos -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- CSS PRINCIPAL DA PÁGINA DE LOGIN -->
+    <link rel="stylesheet" href="login.css">
+
+    <!-- ÍCONES PARA DISPOSITIVOS (FAVICON + APP) -->
+    <!-- Apple (iPhone/iPad) -->
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+
+    <!-- Android -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-icon-192x192.png">
+
+    <!-- Favicon padrão (navegador) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+    <!-- MANIFEST (para PWA - app instalável) -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- CONFIGURAÇÕES PARA WINDOWS -->
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+
+    <!-- COR DA BARRA DO NAVEGADOR (MOBILE) -->
+    <meta name="theme-color" content="#ffffff">
+
+</head>
+
+<body>
+
+    <!-- PAINEL ESQUERDO (IDENTIDADE VISUAL DO SISTEMA) -->
+    <div class="left-panel" aria-hidden="true">
+
+        <!-- GRID DECORATIVO (EFEITO VISUAL) -->
+        <div class="grid-lines"></div>
+
+        <!-- NOME / LOGO -->
+        <div class="brand">
+            <div class="brand-logo">System Product</div>
+            <div class="brand-tagline">Gestão inteligente de produtos</div>
+        </div>
+
+        <!-- TÍTULO DE DESTAQUE -->
+        <div class="left-headline">
+            <h1>Controle seu<br><span>estoque</span><br>com facilidade</h1>
+            <p>
+                Cadastre, edite e visualize produtos em segundos.
+                Tudo salvo localmente — sem servidor, sem complicação.
+            </p>
+        </div>
+
+        <!-- ESTATÍSTICAS SIMBÓLICAS -->
+        <div class="stats-row">
+            <div>
+                <div class="stat-value">100%</div>
+                <div class="stat-label">Gratuito</div>
+            </div>
+            <div>
+                <div class="stat-value">0</div>
+                <div class="stat-label">Servidores</div>
+            </div>
+            <div>
+                <div class="stat-value">∞</div>
+                <div class="stat-label">Produtos</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ÁREA PRINCIPAL DO LOGIN -->
+    <!-- Conteúdo será carregado via JavaScript (login.js) -->
+    <main class="login-area" id="main"></main>
+
+    <!-- SCRIPT PRINCIPAL DO LOGIN -->
+    <script src="login.js"></script>
+
+</body>
+</html>

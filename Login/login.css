@@ -1,0 +1,557 @@
+/* =============================== */
+/* RESET GLOBAL */
+/* Remove margens e padroniza box */
+/* =============================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* =============================== */
+/* VARIÁVEIS (TEMA DO SISTEMA) */
+/* =============================== */
+:root {
+    --bg: #0a0e1a;        /* Fundo principal */
+    --surface: #111827;   /* Fundo do painel */
+    --border: #1e2d40;    /* Bordas */
+    --accent: #00d4ff;    /* Cor destaque */
+    --accent2: #7c3aed;   /* Cor secundária */
+    --text: #e8eaf6;      /* Texto principal */
+    --muted: #6b7a99;     /* Texto secundário */
+    --error: #ff4d6d;     /* Erro */
+    --success: #00e5a0;   /* Sucesso */
+}
+
+
+/* =============================== */
+/* BODY */
+/* =============================== */
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+
+    /* Layout dividido (esquerda + direita) */
+    display: flex;
+    align-items: stretch;
+
+    overflow: hidden;
+}
+
+
+/* =============================== */
+/* PAINEL ESQUERDO (VISUAL) */
+/* =============================== */
+.left-panel {
+    flex: 1;
+
+    /* Imagem + overlay escuro */
+    background: 
+        linear-gradient(rgba(10,14,26,0.85), rgba(10,14,26,0.85)),
+        url("compagnons-Fa9b57hffnM-unsplash (1).jpg");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 60px;
+
+    position: relative;
+    overflow: hidden;
+}
+
+
+/* EFEITO DE LUZ (CANTO SUPERIOR) */
+.left-panel::before {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 70%);
+    top: -100px;
+    left: -100px;
+}
+
+/* EFEITO DE LUZ (CANTO INFERIOR) */
+.left-panel::after {
+    content: '';
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(30,41,59,0.25) 0%, transparent 70%);
+    bottom: -80px;
+    right: -80px;
+}
+
+
+/* GRID DECORATIVO */
+.grid-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(37,99,235,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(37,99,235,0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+
+/* =============================== */
+/* MARCA / LOGO */
+/* =============================== */
+.brand {
+    position: relative;
+    z-index: 1;
+}
+
+.brand-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--primary); /* OBS: var(--primary) não foi definido */
+    margin-bottom: 8px;
+}
+
+.brand-tagline {
+    font-size: 0.875rem;
+    color: #94a3b8;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+
+/* =============================== */
+/* TEXTO DE DESTAQUE (ESQUERDA) */
+/* =============================== */
+.left-headline {
+    position: relative;
+    z-index: 1;
+    margin-top: 80px;
+}
+
+.left-headline h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text);
+}
+
+.left-headline h1 span {
+    color: var(--primary); /* OBS: var(--primary) não definido */
+}
+
+.left-headline p {
+    margin-top: 20px;
+    color: #94a3b8;
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 380px;
+}
+
+
+/* =============================== */
+/* ESTATÍSTICAS */
+/* =============================== */
+.stats-row {
+    position: relative;
+    z-index: 1;
+    margin-top: 60px;
+    display: flex;
+    gap: 40px;
+}
+
+.stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--primary); /* OBS: não definido */
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+
+/* =============================== */
+/* PAINEL DIREITO (LOGIN) */
+/* =============================== */
+.login-area {
+    width: 480px;
+    min-height: 100vh;
+    background: var(--surface);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    padding: 60px 48px;
+    border-left: 1px solid var(--border);
+
+    position: relative;
+}
+
+/* LINHA DECORATIVA SUPERIOR */
+.login-area::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(135deg, var(--bg) 0%, #172554 50%, var(--surface) 100%);
+}
+
+
+/* =============================== */
+/* TEXTOS DO LOGIN */
+/* =============================== */
+.login-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.login-sub {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 40px;
+}
+
+
+/* =============================== */
+/* FORMULÁRIO */
+/* =============================== */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+/* INPUTS */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+
+    padding: 14px 16px;
+    border-radius: 8px;
+
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+
+/* FOCUS */
+.form-group input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,212,255,0.1);
+}
+
+/* ERRO NO INPUT */
+.form-group input.error-field {
+    border-color: var(--error);
+}
+
+/* TEXTO DE ERRO */
+.field-error {
+    color: var(--error);
+    font-size: 0.78rem;
+    margin-top: 5px;
+    display: none;
+}
+
+.field-error.show {
+    display: block;
+}
+
+
+/* =============================== */
+/* LEMBRAR SENHA */
+/* =============================== */
+.remember-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+}
+
+.remember-row input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+.remember-row label {
+    font-size: 0.875rem;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+
+/* =============================== */
+/* BOTÃO LOGIN */
+/* =============================== */
+.btn-login {
+    width: 100%;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: var(--text);
+
+    border: none;
+    padding: 15px;
+    border-radius: 12px;
+
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+
+    cursor: pointer;
+    letter-spacing: 0.5px;
+
+    transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn-login:hover {
+    opacity: 0.9;
+}
+
+.btn-login:active {
+    transform: scale(0.99);
+}
+
+
+/* =============================== */
+/* ALERTAS (ERRO / SUCESSO) */
+/* =============================== */
+.alert-msg {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    margin-bottom: 20px;
+    display: none;
+}
+
+/* ERRO */
+.alert-msg.error {
+    background: rgba(255,77,109,0.12);
+    border: 1px solid rgba(255,77,109,0.3);
+    color: var(--error);
+    display: block;
+}
+
+/* SUCESSO */
+.alert-msg.success {
+    background: rgba(0,229,160,0.12);
+    border: 1px solid rgba(0,229,160,0.3);
+    color: var(--success);
+    display: block;
+}
+
+
+/* =============================== */
+/* RESPONSIVO */
+/* =============================== */
+@media (max-width: 900px) {
+
+    /* Esconde painel esquerdo */
+    .left-panel {
+        display: none;
+    }
+
+    /* Login ocupa toda a tela */
+    .login-area {
+        width: 100%;
+    }
+
+}
+
+/* =============================== */
+/* CORREÇÃO: --primary não definido */
+/* Usa --accent como substituto    */
+/* =============================== */
+.brand-logo,
+.left-headline h1 span,
+.stat-value {
+    color: var(--accent);
+}
+
+
+/* =============================== */
+/* CONTEÚDO ESQUERDO (TEXTOS)      */
+/* =============================== */
+.left-headline {
+    position: relative;
+    z-index: 1;
+    margin-top: 80px;
+}
+
+.left-headline h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text);
+}
+
+.left-headline p {
+    margin-top: 20px;
+    color: #94a3b8;
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 380px;
+}
+
+.stats-row {
+    position: relative;
+    z-index: 1;
+    margin-top: 60px;
+    display: flex;
+    gap: 40px;
+}
+
+.stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+
+/* =============================== */
+/* MÚLTIPLOS PAINÉIS (LOGIN/CADASTRO/RECUPERAR) */
+/* =============================== */
+
+/* Oculta painéis inativos */
+.login-panel {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Painel ativo fica visível */
+.login-panel.active {
+    display: flex;
+}
+
+
+/* =============================== */
+/* LINKS DE AÇÃO (CADASTRAR / VOLTAR) */
+/* =============================== */
+.login-footer-links {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.875rem;
+    color: var(--muted);
+}
+
+.link-acao {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 4px;
+    transition: opacity 0.2s;
+}
+
+.link-acao:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+/* Link de recuperar senha (na linha do lembrar-me) */
+.link-recuperar {
+    margin-left: auto;
+    color: var(--accent);
+    font-size: 0.8rem;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+}
+
+.link-recuperar:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+/* Linha lembrar: flex para empurrar link para direita */
+.remember-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+    flex-wrap: nowrap;
+}
+
+
+/* =============================== */
+/* SOBRE O SISTEMA (DETAILS/SUMMARY) */
+/* =============================== */
+.sobre-sistema {
+    margin-top: 28px;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+}
+
+.sobre-sistema details summary {
+    font-size: 0.8rem;
+    color: var(--muted);
+    cursor: pointer;
+    user-select: none;
+    letter-spacing: 0.5px;
+    list-style: none;
+}
+
+.sobre-sistema details summary::before {
+    content: '▸ ';
+    color: var(--accent);
+}
+
+.sobre-sistema details[open] summary::before {
+    content: '▾ ';
+}
+
+.sobre-sistema details p {
+    margin-top: 10px;
+    font-size: 0.82rem;
+    color: #94a3b8;
+    line-height: 1.6;
+}
+
+/* =============================== */
+/* SCROLL NO PAINEL DE LOGIN (MOBILE) */
+/* =============================== */
+.login-area {
+    overflow-y: auto;
+}

@@ -1,0 +1,190 @@
+<!-- =============================== -->
+<!-- TELA: HOME (PAINEL INICIAL) -->
+<!-- =============================== -->
+<div class="screen active" id="screen-home">
+
+    <!-- HERO (TÍTULO PRINCIPAL) -->
+    <div class="home-hero">
+        <h1>Painel de <span>Controle</span></h1>
+        <p>Gerencie seus produtos, estoque e muito mais.</p>
+    </div>
+
+    <!-- CARDS DE NAVEGAÇÃO -->
+    <div class="home-cards">
+
+        <!-- CARD: VER PRODUTOS -->
+        <!-- data-goto usado no JS para trocar de tela -->
+        <div class="home-card" data-goto="produtos">
+            <div class="home-card-icon">📦</div>
+            <h3>Ver Produtos</h3>
+            <p>Consulte todos os produtos cadastrados e seus estoques.</p>
+        </div>
+
+        <!-- CARD: NOVO PRODUTO -->
+        <div class="home-card" data-goto="cadastrar">
+            <div class="home-card-icon">➕</div>
+            <h3>Novo Produto</h3>
+            <p>Adicione um novo produto ao sistema rapidamente.</p>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- =============================== -->
+<!-- TELA: PRODUTOS (LISTAGEM + CRUD) -->
+<!-- =============================== -->
+<div class="screen" id="screen-produtos">
+
+    <!-- CABEÇALHO -->
+    <div class="page-header">
+
+        <!-- TÍTULO -->
+        <div class="page-title">
+            Produtos
+            <span>Lista de todos os produtos cadastrados</span>
+        </div>
+
+        <!-- BOTÃO: NOVO PRODUTO -->
+        <button class="btn-primary" id="btnNovoProduto">
+            + Novo Produto
+        </button>
+
+    </div>
+
+
+    <!-- =============================== -->
+    <!-- FORMULÁRIO (CRIAR / EDITAR) -->
+    <!-- =============================== -->
+    <div class="card-criar" id="cardCriar" style="display:none;">
+
+        <!-- TÍTULO DINÂMICO (novo / editar) -->
+        <div class="card-criar-header" id="formTitulo">
+            Novo Produto
+        </div>
+
+        <div class="card-criar-body">
+
+            <!-- ID OCULTO (usado para edição) -->
+            <input type="hidden" id="editandoId">
+
+            <!-- NOME -->
+            <div class="input-group">
+                <label>Nome do Produto *</label>
+                <input type="text" id="inputNome" placeholder="Ex: Camiseta Azul">
+                <div class="field-error" id="erroNome">
+                    Informe o nome do produto.
+                </div>
+            </div>
+
+            <!-- PREÇO -->
+            <div class="input-group">
+                <label>Preço (R$) *</label>
+                <input type="number" id="inputPreco" placeholder="0,00" min="0" step="0.01">
+                <div class="field-error" id="erroPreco">
+                    Informe um preço válido.
+                </div>
+            </div>
+
+            <!-- ESTOQUE -->
+            <div class="input-group">
+                <label>Estoque *</label>
+                <input type="number" id="inputEstoque" placeholder="0" min="0">
+                <div class="field-error" id="erroEstoque">
+                    Informe a quantidade em estoque.
+                </div>
+            </div>
+
+            <!-- BOTÕES -->
+            <button class="btn-salvar" id="btnSalvar">Salvar</button>
+            <button class="btn-cancelar" id="btnCancelar">Limpar</button>
+
+        </div>
+    </div>
+
+
+    <!-- =============================== -->
+    <!-- TABELA DE PRODUTOS -->
+    <!-- =============================== -->
+    <div class="table-wrap">
+
+        <table>
+
+            <!-- CABEÇALHO -->
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Produto</th>
+                    <th>Preço</th>
+                    <th>Estoque</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <!-- CORPO DINÂMICO (JS PREENCHE) -->
+            <tbody id="tabelaProdutos"></tbody>
+
+        </table>
+
+    </div>
+</div>
+
+
+<!-- =============================== -->
+<!-- TELA: CADASTRAR (ATALHO DIRETO) -->
+<!-- =============================== -->
+<div class="screen" id="screen-cadastrar">
+
+    <!-- CABEÇALHO -->
+    <div class="page-header">
+        <div class="page-title">
+            Cadastrar Produto
+            <span>Preencha os campos abaixo</span>
+        </div>
+    </div>
+
+
+    <!-- FORMULÁRIO -->
+    <div class="card-criar">
+
+        <div class="card-criar-header">
+            Formulário de Cadastro
+        </div>
+
+        <div class="card-criar-body">
+
+            <!-- NOME -->
+            <div class="input-group">
+                <label>Nome do Produto *</label>
+                <input type="text" id="inputNome2" placeholder="Ex: Camiseta Azul">
+                <div class="field-error" id="erroNome2">
+                    Informe o nome do produto.
+                </div>
+            </div>
+
+            <!-- PREÇO -->
+            <div class="input-group">
+                <label>Preço (R$) *</label>
+                <input type="number" id="inputPreco2" placeholder="0,00" min="0" step="0.01">
+                <div class="field-error" id="erroPreco2">
+                    Informe um preço válido.
+                </div>
+            </div>
+
+            <!-- ESTOQUE -->
+            <div class="input-group">
+                <label>Estoque *</label>
+                <input type="number" id="inputEstoque2" placeholder="0" min="0">
+                <div class="field-error" id="erroEstoque2">
+                    Informe a quantidade em estoque.
+                </div>
+            </div>
+
+            <!-- BOTÕES -->
+            <button class="btn-salvar" id="btnSalvar2">Salvar</button>
+            <button class="btn-cancelar" id="btnCancelar2">Limpar</button>
+
+        </div>
+    </div>
+
+</div>
