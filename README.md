@@ -1,117 +1,184 @@
-# 📘 Dicionário CSS do Projeto
-
-Este documento reúne todas as propriedades CSS utilizadas no projeto, com explicações simples para facilitar estudo, manutenção e evolução do código.
+# 📘 README + DICIONÁRIO COMPLETO DO PROJETO
 
 ---
 
-## 🎨 Layout e Estrutura
+# 📖 1. VISÃO GERAL
 
-**display**: define o tipo de exibição (flex, block, grid, none)
-**position**: tipo de posicionamento (relative, absolute, fixed, sticky)
-**top / left / right / bottom**: posicionamento em relação ao container
-**inset**: atalho para top/right/bottom/left
-**z-index**: define a ordem de sobreposição (camadas)
+Sistema web com:
 
-**flex**: controle de crescimento no flexbox
-**flex-direction**: direção dos elementos (linha ou coluna)
-**justify-content**: alinhamento horizontal
-**align-items**: alinhamento vertical
-**flex-wrap**: quebra de linha no flex
-**gap**: espaçamento entre elementos
-
-**grid**: ativa layout em grid
-**grid-template-columns**: define colunas do grid
+* Login / Cadastro / Recuperação
+* CRUD de produtos
+* Navegação SPA (sem recarregar página)
+* Armazenamento local (localStorage/sessionStorage)
 
 ---
 
-## 📏 Espaçamento e Tamanho
+# 🧱 2. ESTRUTURA DO PROJETO
 
-**margin**: espaçamento externo
-**padding**: espaçamento interno
-
-**width**: largura
-**height**: altura
-**min-height**: altura mínima
-**max-width**: largura máxima
-
----
-
-## 🎨 Cores e Fundos
-
-**color**: cor do texto
-
-**background**: define fundo completo
-**background-image**: imagem ou gradiente
-**background-size**: tamanho da imagem
-**background-position**: posição da imagem
-**background-repeat**: repetição da imagem
-
----
-
-## 🔲 Bordas e Estrutura
-
-**border**: define borda
-**border-radius**: arredondamento
-**border-bottom**: borda inferior
-**border-left**: borda lateral esquerda
-**border-collapse**: remove espaçamento em tabelas
+```
+📁 projeto/
+ ├── 📁 Login/
+ │   ├── index.html
+ │   ├── main.html
+ │   ├── login.js
+ │   └── style.css
+ │
+ ├── 📁 Index/
+ │   ├── index.html
+ │   ├── header.html
+ │   ├── main.html
+ │   ├── footer.html
+ │   ├── app.js
+ │   └── style.css
+ │
+ └── README.md
+```
 
 ---
 
-## 🔤 Tipografia
+# 🎨 3. DICIONÁRIO CSS (PROPRIEDADES USADAS)
 
-**font-family**: tipo de fonte
-**font-size**: tamanho da fonte
-**font-weight**: peso (negrito)
-**line-height**: altura da linha
-**letter-spacing**: espaçamento entre letras
+### 📌 Layout e Posicionamento
 
-**text-transform**: transforma texto (uppercase etc.)
-**text-decoration**: decoração (underline etc.)
-**text-align**: alinhamento do texto
+* `position` → define o tipo de posicionamento (relative, absolute, fixed, sticky)
+* `top / left / right / bottom` → posiciona o elemento
+* `z-index` → controla qual elemento fica por cima
+* `display` → define como o elemento se comporta (flex, grid, block)
+* `flex-direction` → direção do flex (row ou column)
+* `justify-content` → alinhamento horizontal
+* `align-items` → alinhamento vertical
+* `gap` → espaçamento entre elementos
+
+### 📌 Espaçamento
+
+* `margin` → espaço externo
+* `padding` → espaço interno
+
+### 📌 Tamanho
+
+* `width` → largura
+* `height` → altura
+* `min-height` → altura mínima
+* `max-width` → largura máxima
+
+### 📌 Cores e Fundo
+
+* `background` → define fundo (cor, imagem ou gradiente)
+* `background-image` → imagem de fundo
+* `background-size` → tamanho do fundo
+* `background-position` → posição da imagem
+* `color` → cor do texto
+* `opacity` → transparência
+
+### 📌 Bordas e Estilo
+
+* `border` → borda do elemento
+* `border-radius` → arredondamento
+* `box-shadow` → sombra
+
+### 📌 Texto
+
+* `font-size` → tamanho da fonte
+* `font-weight` → peso da fonte
+* `letter-spacing` → espaçamento entre letras
+* `text-transform` → maiúsculo/minúsculo
+* `text-decoration` → sublinhado etc
+
+### 📌 Efeitos
+
+* `transition` → animação suave
+* `transform` → mover, escalar, rotacionar
+
+### 📌 Outros importantes
+
+* `overflow` → controla conteúdo que ultrapassa
+* `cursor` → tipo do cursor
+* `outline` → contorno (focus)
 
 ---
 
-## 🧩 Interação e UX
+# ⚙️ 4. DICIONÁRIO JAVASCRIPT (USADO NO PROJETO)
 
-**cursor**: tipo do cursor
-**user-select**: permite/bloqueia seleção de texto
-**white-space**: controla quebra de linha
+### 📌 DOM
+
+* `document.getElementById()` → seleciona elemento pelo id
+* `document.querySelector()` → seleciona primeiro elemento
+* `document.querySelectorAll()` → seleciona vários elementos
+
+### 📌 Eventos
+
+* `addEventListener()` → escuta eventos (click, input, etc)
+* `event.preventDefault()` → impede comportamento padrão
+
+### 📌 Classes CSS
+
+* `classList.add()` → adiciona classe
+* `classList.remove()` → remove classe
+
+### 📌 Manipulação de conteúdo
+
+* `innerHTML` → insere HTML
+* `textContent` → insere texto
+
+### 📌 Fetch (carregar HTML)
+
+* `fetch()` → busca arquivos
+* `.then()` → trata resposta
+
+### 📌 Armazenamento
+
+* `localStorage.setItem()` → salva dados
+
+* `localStorage.getItem()` → lê dados
+
+* `localStorage.removeItem()` → remove dados
+
+* `sessionStorage.setItem()` → salva sessão
+
+### 📌 Arrays
+
+* `.push()` → adiciona item
+* `.find()` → encontra item
+* `.some()` → verifica existência
+* `.filter()` → remove item
+
+### 📌 Validação
+
+* `if` → condição
+* `isNaN()` → verifica número inválido
+* `trim()` → remove espaços
+
+### 📌 Tempo
+
+* `setTimeout()` → executa depois de um tempo
+
+### 📌 Funções úteis
+
+* `Date.now()` → gera ID único
+* `JSON.stringify()` → transforma em texto
+* `JSON.parse()` → transforma em objeto
+
+### 📌 Segurança
+
+* `replace()` → usado para evitar XSS (escape HTML)
 
 ---
 
-## ✨ Efeitos Visuais
+# 🔄 5. FLUXO DO SISTEMA
 
-**transition**: animações suaves
-**transform**: transformações (scale, translate etc.)
-**box-shadow**: sombra
-**opacity**: transparência
+### LOGIN
 
----
+1. Usuário digita dados
+2. JS valida campos
+3. Verifica no localStorage
+4. Salva sessão
+5. Redireciona
 
-## ⚙️ Controle de Conteúdo
+### CRUD
 
-**overflow**: controla conteúdo excedente
-**overflow-y**: controle vertical do overflow
-
----
-
-## 🧪 Formulários e Elementos Nativos
-
-**outline**: contorno (focus)
-**accent-color**: cor de inputs nativos
-
----
-
-## 🧱 Pseudo-elementos e Listas
-
-**content**: conteúdo de ::before e ::after
-**list-style**: estilo de listas
-
----
-
-## 📊 Tabelas
-
-**table-layout**: comportamento da tabela
+1. Criar produto
+2. Salvar no localStorage
+3. Renderizar tabela
+4. Editar / Excluir
 
 ---
