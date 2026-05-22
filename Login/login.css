@@ -26,6 +26,130 @@
 
 
 /* =============================== */
+/* MATERIAL OUTLINED TEXT FIELD */
+/* =============================== */
+
+md-outlined-text-field {
+    width: 100%;
+
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+
+    /* TEXTO */
+    --md-outlined-text-field-input-text-color: #eaf1ff;
+    --md-outlined-text-field-label-text-color: #9fb3d9;
+    --md-outlined-text-field-focus-label-text-color: #6ea8ff;
+    --md-outlined-text-field-caret-color: #6ea8ff;
+
+    /* OUTLINE (BORDA) */
+    --md-outlined-text-field-outline-color: rgba(110,168,255,0.18);
+    --md-outlined-text-field-hover-outline-color: rgba(110,168,255,0.35);
+    --md-outlined-text-field-focus-outline-color: #6ea8ff;
+
+    /* FUNDO (igual seu tema dark grid) */
+    --md-outlined-text-field-container-color: transparent;
+
+    /* FORMATO */
+    --md-outlined-text-field-container-shape: 18px;
+    --md-outlined-text-field-container-height: 56px;
+
+    border-radius: 18px;
+
+    /* GRID BACKGROUND (efeito premium sutil) */
+    background:
+        linear-gradient(
+            rgba(255,255,255,0.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,0.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            135deg,
+            #0f172a,
+            #16233d
+        );
+
+    background-size: 18px 18px;
+
+    /* SOMBRA SUAVE */
+    box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.03),
+        0 4px 14px rgba(0,0,0,0.25);
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        filter .25s ease;
+}
+
+/* =============================== */
+/* HOVER */
+/* =============================== */
+
+md-outlined-text-field:hover {
+    transform: translateY(-1px);
+
+    --md-outlined-text-field-outline-color: rgba(110,168,255,0.4);
+
+    box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.04),
+        0 6px 18px rgba(0,0,0,0.30);
+}
+
+/* =============================== */
+/* FOCUS */
+/* =============================== */
+
+md-outlined-text-field:focus-within {
+    transform: translateY(-1px);
+
+    --md-outlined-text-field-outline-color: #6ea8ff;
+    --md-outlined-text-field-focus-outline-color: #6ea8ff;
+
+    box-shadow:
+        0 0 0 4px rgba(110,168,255,0.12),
+        0 10px 26px rgba(0,0,0,0.35);
+}
+
+/* =============================== */
+/* ERRO */
+/* =============================== */
+
+md-outlined-text-field.error-field {
+    --md-outlined-text-field-outline-color: #ff5f7a;
+    --md-outlined-text-field-focus-outline-color: #ff5f7a;
+
+    box-shadow:
+        0 0 0 4px rgba(255,95,122,0.12);
+}
+
+/* =============================== */
+/* TEXTO DE ERRO */
+/* =============================== */
+
+.field-error {
+    font-size: 0.78rem;
+    color: #ff7b92;
+
+    margin-left: 8px;
+
+    opacity: 0;
+    transform: translateY(-4px);
+
+    transition: all .25s ease;
+}
+
+.field-error.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+
+/* =============================== */
 /* BODY */
 /* =============================== */
 body {
@@ -40,6 +164,18 @@ body {
 
     overflow: hidden;
 }
+
+/* =============================== */
+/* FORM GROUP */
+/* =============================== */
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
 
 
 /* =============================== */
