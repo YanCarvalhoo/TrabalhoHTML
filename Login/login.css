@@ -25,8 +25,59 @@
 }
 
 
+
 /* =============================== */
-/* MATERIAL OUTLINED TEXT FIELD */
+/* RESET GLOBAL */
+/* =============================== */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* =============================== */
+/* VARIÁVEIS */
+/* =============================== */
+
+:root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --border: #1e2d40;
+    --accent: #6ea8ff;
+    --accent2: #7c3aed;
+    --text: #e8eaf6;
+    --muted: #6b7a99;
+    --error: #ff5f7a;
+    --success: #00e5a0;
+}
+
+/* =============================== */
+/* BODY */
+/* =============================== */
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    overflow: hidden;
+}
+
+/* =============================== */
+/* FORM GROUP */
+/* =============================== */
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
+/* =============================== */
+/* MATERIAL OUTLINED FIELD (FIX FINAL) */
 /* =============================== */
 
 md-outlined-text-field {
@@ -35,18 +86,21 @@ md-outlined-text-field {
     font-family: 'DM Sans', sans-serif;
     font-size: 0.9rem;
 
-    /* TEXTO */
-    --md-outlined-text-field-input-text-color: #eaf1ff;
-    --md-outlined-text-field-label-text-color: #9fb3d9;
-    --md-outlined-text-field-focus-label-text-color: #6ea8ff;
-    --md-outlined-text-field-caret-color: #6ea8ff;
+    /* TEXTO (FIX PRETO NO FOCUS) */
+    --md-outlined-text-field-input-text-color: var(--text);
+    --md-outlined-text-field-focus-input-text-color: var(--text);
 
-    /* OUTLINE (BORDA) */
+    /* LABEL */
+    --md-outlined-text-field-label-text-color: var(--muted);
+    --md-outlined-text-field-focus-label-text-color: var(--accent);
+    --md-outlined-text-field-caret-color: var(--accent);
+
+    /* BORDA */
     --md-outlined-text-field-outline-color: rgba(110,168,255,0.18);
     --md-outlined-text-field-hover-outline-color: rgba(110,168,255,0.35);
-    --md-outlined-text-field-focus-outline-color: #6ea8ff;
+    --md-outlined-text-field-focus-outline-color: var(--accent);
 
-    /* FUNDO (igual seu tema dark grid) */
+    /* FUNDO */
     --md-outlined-text-field-container-color: transparent;
 
     /* FORMATO */
@@ -55,34 +109,19 @@ md-outlined-text-field {
 
     border-radius: 18px;
 
-    /* GRID BACKGROUND (efeito premium sutil) */
+    /* GRID SUAVE */
     background:
-        linear-gradient(
-            rgba(255,255,255,0.025) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(255,255,255,0.025) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            135deg,
-            #0f172a,
-            #16233d
-        );
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(135deg, #0f172a, #16233d);
 
     background-size: 18px 18px;
 
-    /* SOMBRA SUAVE */
     box-shadow:
         inset 0 1px 1px rgba(255,255,255,0.03),
         0 4px 14px rgba(0,0,0,0.25);
 
-    transition:
-        transform .25s ease,
-        box-shadow .25s ease,
-        filter .25s ease;
+    transition: all .25s ease;
 }
 
 /* =============================== */
@@ -91,12 +130,6 @@ md-outlined-text-field {
 
 md-outlined-text-field:hover {
     transform: translateY(-1px);
-
-    --md-outlined-text-field-outline-color: rgba(110,168,255,0.4);
-
-    box-shadow:
-        inset 0 1px 1px rgba(255,255,255,0.04),
-        0 6px 18px rgba(0,0,0,0.30);
 }
 
 /* =============================== */
@@ -106,24 +139,34 @@ md-outlined-text-field:hover {
 md-outlined-text-field:focus-within {
     transform: translateY(-1px);
 
-    --md-outlined-text-field-outline-color: #6ea8ff;
-    --md-outlined-text-field-focus-outline-color: #6ea8ff;
-
     box-shadow:
         0 0 0 4px rgba(110,168,255,0.12),
         0 10px 26px rgba(0,0,0,0.35);
 }
 
 /* =============================== */
-/* ERRO */
+/* FIX: TEXTO NÃO FICA PRETO (IMPORTANTE) */
+/* =============================== */
+
+md-outlined-text-field::part(input) {
+    color: var(--text) !important;
+}
+
+md-outlined-text-field::part(input):focus {
+    color: var(--text) !important;
+}
+
+md-outlined-text-field::part(input)::placeholder {
+    color: rgba(232, 234, 246, 0.5);
+}
+
+/* =============================== */
+/* ERRO (CORRIGIDO) */
 /* =============================== */
 
 md-outlined-text-field.error-field {
-    --md-outlined-text-field-outline-color: #ff5f7a;
-    --md-outlined-text-field-focus-outline-color: #ff5f7a;
-
-    box-shadow:
-        0 0 0 4px rgba(255,95,122,0.12);
+    --md-outlined-text-field-outline-color: var(--error);
+    --md-outlined-text-field-focus-outline-color: var(--error);
 }
 
 /* =============================== */
@@ -132,7 +175,7 @@ md-outlined-text-field.error-field {
 
 .field-error {
     font-size: 0.78rem;
-    color: #ff7b92;
+    color: var(--error);
 
     margin-left: 8px;
 
