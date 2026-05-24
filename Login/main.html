@@ -1,11 +1,4 @@
-<!-- =============================== -->
-<!-- PAINEL DIREITO: CONTEÚDO DINÂMICO -->
-<!-- =============================== -->
-
-
-<!-- =============================== -->
 <!-- PAINEL: LOGIN -->
-<!-- =============================== -->
 <div id="panel-login" class="login-panel active">
 
     <div class="login-title">Bem-vindo de volta</div>
@@ -13,69 +6,43 @@
 
     <div class="alert-msg" id="alertMsg"></div>
 
-    <!-- USUÁRIO -->
     <div class="form-group">
-        <md-outlined-text-field
-            id="inputUsuario"
-            label="Usuário"
-            autocomplete="username"
-            required>
-        </md-outlined-text-field>
-        <div class="field-error" id="erroUsuario">
-            Por favor, informe seu usuário.
-        </div>
+        <md-outlined-text-field id="inputUsuario" label="Usuário" autocomplete="username" required></md-outlined-text-field>
+        <div class="field-error" id="erroUsuario">Por favor, informe seu usuário.</div>
     </div>
 
-    <!-- SENHA -->
     <div class="form-group">
-        <md-outlined-text-field
-            id="inputSenha"
-            type="password"
-            label="Senha"
-            autocomplete="current-password"
-            required>
-        </md-outlined-text-field>
-        <div class="field-error" id="erroSenha">
-            Por favor, informe sua senha.
-        </div>
+        <md-outlined-text-field id="inputSenha" type="password" label="Senha" autocomplete="current-password" required></md-outlined-text-field>
+        <div class="field-error" id="erroSenha">Por favor, informe sua senha.</div>
     </div>
 
-    <!-- LEMBRAR / ESQUECI — md-checkbox M3 -->
     <div class="remember-row">
-        <md-checkbox id="lembrarSenha" touch-target="wrapper"></md-checkbox>
+        <input type="checkbox" id="lembrarSenha">
         <label for="lembrarSenha">Lembrar senha</label>
-        <a href="#" class="link-recuperar" id="linkRecuperar">
-            Esqueci a senha
-        </a>
+        <a href="#" class="link-recuperar" id="linkRecuperar">Esqueci a senha</a>
     </div>
 
-    <button class="btn-login" id="btnLogin">
-        Entrar no Sistema
-    </button>
+    <!-- Login: Entrar + Limpar -->
+    <div class="btn-row">
+        <button class="btn-login" id="btnLogin">Entrar no Sistema</button>
+        <button class="btn-secondary" id="btnLimparLogin">Limpar</button>
+    </div>
 
     <div class="login-footer-links">
         Não tem conta?
-        <a href="#" id="linkCadastrar" class="link-acao">
-            Cadastre-se grátis
-        </a>
+        <a href="#" id="linkCadastrar" class="link-acao">Cadastre-se grátis</a>
     </div>
 
     <div class="sobre-sistema">
         <details>
             <summary>O que é o System Product?</summary>
-            <p>
-                <strong>System Product</strong> é uma plataforma de gestão de produtos
-                desenvolvida para simplificar o controle de estoque e preços.
-            </p>
+            <p><strong>System Product</strong> é uma plataforma de gestão de produtos desenvolvida para simplificar o controle de estoque e preços.</p>
         </details>
     </div>
-
 </div>
 
 
-<!-- =============================== -->
 <!-- PAINEL: CADASTRO -->
-<!-- =============================== -->
 <div id="panel-cadastro" class="login-panel">
 
     <div class="login-title">Criar Conta</div>
@@ -83,91 +50,45 @@
 
     <div class="alert-msg" id="alertCadastro"></div>
 
-    <!-- NOME -->
     <div class="form-group">
-        <md-outlined-text-field
-            id="cadNome"
-            label="Nome Completo"
-            autocomplete="name"
-            required>
-        </md-outlined-text-field>
-        <div class="field-error" id="erroCadNome">
-            Por favor, informe seu nome.
-        </div>
+        <md-outlined-text-field id="cadNome" label="Nome Completo" autocomplete="name" required></md-outlined-text-field>
+        <div class="field-error" id="erroCadNome">Por favor, informe seu nome.</div>
     </div>
 
-    <!-- USUÁRIO -->
     <div class="form-group">
-        <md-outlined-text-field
-            id="cadUsuario"
-            label="Usuário"
-            autocomplete="username"
-            required>
-        </md-outlined-text-field>
-        <div class="field-error" id="erroCadUsuario">
-            Informe um nome de usuário.
-        </div>
+        <md-outlined-text-field id="cadUsuario" label="Usuário" autocomplete="username" required></md-outlined-text-field>
+        <div class="field-error" id="erroCadUsuario">Informe um nome de usuário.</div>
     </div>
 
-    <!-- EMAIL -->
     <div class="form-group">
-        <md-outlined-text-field
-            id="cadEmail"
-            type="email"
-            label="E-mail"
-            autocomplete="email"
-            required>
-        </md-outlined-text-field>
-        <div class="field-error" id="erroCadEmail">
-            Informe um e-mail válido.
-        </div>
+        <md-outlined-text-field id="cadEmail" type="email" label="E-mail" autocomplete="email" required></md-outlined-text-field>
+        <div class="field-error" id="erroCadEmail">Informe um e-mail válido.</div>
     </div>
 
-    <!-- SENHA -->
     <div class="form-group">
-        <md-outlined-text-field
-            id="cadSenha"
-            type="password"
-            label="Senha"
-            autocomplete="new-password"
-            required>
-        </md-outlined-text-field>
-        <div class="field-error" id="erroCadSenha">
-            A senha precisa ter ao menos 6 caracteres.
-        </div>
+        <md-outlined-text-field id="cadSenha" type="password" label="Senha" autocomplete="new-password" required></md-outlined-text-field>
+        <div class="field-error" id="erroCadSenha">A senha precisa ter ao menos 6 caracteres.</div>
     </div>
 
-    <!-- CONFIRMAR SENHA -->
     <div class="form-group">
-        <md-outlined-text-field
-            id="cadConfSenha"
-            type="password"
-            label="Confirmar Senha"
-            autocomplete="new-password"
-            required>
-        </md-outlined-text-field>
-        <div class="field-error" id="erroCadConfSenha">
-            As senhas não coincidem.
-        </div>
+        <md-outlined-text-field id="cadConfSenha" type="password" label="Confirmar Senha" autocomplete="new-password" required></md-outlined-text-field>
+        <div class="field-error" id="erroCadConfSenha">As senhas não coincidem.</div>
     </div>
 
-    <button class="btn-login" id="btnCadastrar">
-        Criar Conta
-    </button>
+    <!-- Cadastro: Salvar + Limpar -->
+    <div class="btn-row">
+        <button class="btn-login" id="btnCadastrar">Criar Conta</button>
+        <button class="btn-secondary" id="btnLimparCadastro">Limpar</button>
+    </div>
 
     <div class="login-footer-links">
         Já tem conta?
-        <a href="#" id="linkVoltarLogin" class="link-acao">
-            Fazer Login
-        </a>
+        <a href="#" id="linkVoltarLogin" class="link-acao">Fazer Login</a>
     </div>
-
 </div>
 
 
-<!-- =============================== -->
 <!-- PAINEL: RECUPERAR SENHA -->
-<!-- =============================== -->
 <div id="panel-recuperar" class="login-panel">
 
     <div class="login-title">Recuperar Senha</div>
@@ -175,29 +96,19 @@
 
     <div class="alert-msg" id="alertRecuperar"></div>
 
-    <!-- EMAIL -->
     <div class="form-group">
-        <md-outlined-text-field
-            id="recEmail"
-            type="email"
-            label="E-mail cadastrado"
-            autocomplete="email"
-            required>
-        </md-outlined-text-field>
-        <div class="field-error" id="erroRecEmail">
-            Informe um e-mail válido.
-        </div>
+        <md-outlined-text-field id="recEmail" type="email" label="E-mail cadastrado" autocomplete="email" required></md-outlined-text-field>
+        <div class="field-error" id="erroRecEmail">Informe um e-mail válido.</div>
     </div>
 
-    <button class="btn-login" id="btnRecuperar">
-        Enviar Instruções
-    </button>
+    <!-- Recuperar: Salvar + Limpar -->
+    <div class="btn-row">
+        <button class="btn-login" id="btnRecuperar">Enviar Instruções</button>
+        <button class="btn-secondary" id="btnLimparRecuperar">Limpar</button>
+    </div>
 
     <div class="login-footer-links">
         Lembrou a senha?
-        <a href="#" id="linkVoltarLogin2" class="link-acao">
-            Fazer Login
-        </a>
+        <a href="#" id="linkVoltarLogin2" class="link-acao">Fazer Login</a>
     </div>
-
 </div>

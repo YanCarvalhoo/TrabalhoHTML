@@ -7,46 +7,32 @@
     padding: 0;
 }
 
-
 /* =============================== */
-/* VARIÁVEIS — M3 COLOR TOKENS     */
-/* Definidas UMA única vez aqui    */
+/* VARIÁVEIS                       */
 /* =============================== */
 :root {
-    /* Superfícies */
-    --bg:             #0a0e1a;
-    --surface:        color-mix(in srgb, #6ea8ff 5%, #111827);
+    --bg:              #0a0e1a;
+    --surface:         color-mix(in srgb, #6ea8ff 5%, #111827);
     --surface-variant: #1a2540;
-    --border:         #1e2d40;
+    --border:          #1e2d40;
 
-    /* Cores primárias */
-    --primary:        #6ea8ff;
-    --on-primary:     #001e45;
-    --primary-hover:  rgba(110,168,255,0.12);
+    --primary:         #6ea8ff;
+    --on-primary:      #001e45;
+    --primary-hover:   rgba(110,168,255,0.12);
 
-    /* Alias para compatibilidade */
-    --accent:         #6ea8ff;
-    --accent2:        #7c3aed;
+    --text:            #e8eaf6;
+    --muted:           #8fa3bf;
 
-    /* Texto */
-    --text:   #e8eaf6;
-    --muted:  #8fa3bf;
+    --error:              #ffb4ab;
+    --error-container:    rgba(255,180,171,0.12);
+    --success:            #00e5a0;
 
-    /* Semânticas */
-    --error:             #ffb4ab;
-    --error-container:   rgba(255,180,171,0.12);
-    --on-error-container:#690005;
-    --success:           #00e5a0;
+    --type-display-small: 2rem;
+    --type-title-medium:  1rem;
+    --type-body-medium:   0.875rem;
+    --type-body-small:    0.75rem;
+    --type-label-large:   0.875rem;
 
-    /* Tipografia M3 — escala de roles */
-    --type-display-small: 2rem;       /* 32sp */
-    --type-title-large:   1.375rem;   /* 22sp */
-    --type-title-medium:  1rem;       /* 16sp */
-    --type-body-medium:   0.875rem;   /* 14sp */
-    --type-body-small:    0.75rem;    /* 12sp */
-    --type-label-large:   0.875rem;   /* 14sp / weight 500 */
-
-    /* Espaçamento M3 — múltiplos de 4dp */
     --sp-4:  4px;
     --sp-8:  8px;
     --sp-12: 12px;
@@ -55,7 +41,6 @@
     --sp-32: 32px;
     --sp-48: 48px;
 }
-
 
 /* =============================== */
 /* BODY                            */
@@ -67,12 +52,11 @@ body {
     min-height: 100vh;
     display: flex;
     align-items: stretch;
-    overflow: hidden;
+    /* FIX: sem overflow:hidden no body para não bloquear scroll interno */
 }
 
-
 /* =============================== */
-/* HERO SCREEN — tela inicial      */
+/* HERO                            */
 /* =============================== */
 #hero-wrapper {
     position: fixed;
@@ -148,9 +132,7 @@ body {
     margin-bottom: var(--sp-24);
 }
 
-.hero-h1 span {
-    color: var(--primary);
-}
+.hero-h1 span { color: var(--primary); }
 
 .hero-desc {
     color: #94a3b8;
@@ -160,7 +142,6 @@ body {
     margin: 0 auto var(--sp-48);
 }
 
-/* Indicador scroll */
 .scroll-hint {
     display: flex;
     flex-direction: column;
@@ -199,17 +180,18 @@ body {
     50%       { transform: translateY(5px); }
 }
 
-
 /* =============================== */
-/* APP WRAPPER — aparece após hero */
+/* APP WRAPPER                     */
 /* =============================== */
 #app-wrapper {
     display: flex;
     width: 100%;
-    min-height: 100vh;
+    /* FIX: height fixo para o painel direito poder fazer scroll interno */
+    height: 100vh;
     opacity: 0;
     transition: opacity 0.6s ease 0.2s;
     pointer-events: none;
+    overflow: hidden;
 }
 
 #app-wrapper.app-visible {
@@ -225,7 +207,6 @@ body {
 #app-wrapper.app-visible .login-area {
     transform: translateY(0);
 }
-
 
 /* =============================== */
 /* PAINEL ESQUERDO                 */
@@ -278,10 +259,7 @@ body {
     background-size: 40px 40px;
 }
 
-.brand {
-    position: relative;
-    z-index: 1;
-}
+.brand { position: relative; z-index: 1; }
 
 .brand-logo {
     font-family: 'Syne', sans-serif;
@@ -313,9 +291,7 @@ body {
     color: var(--text);
 }
 
-.left-headline h1 span {
-    color: var(--primary);
-}
+.left-headline h1 span { color: var(--primary); }
 
 .left-headline p {
     margin-top: var(--sp-24);
@@ -348,77 +324,72 @@ body {
     margin-top: var(--sp-4);
 }
 
-
 /* =============================== */
-/* PAINEL DIREITO — Surface Tonal  */
+/* PAINEL DIREITO                  */
+/* FIX: height:100vh + overflow-y  */
+/* resolve o corte do cadastro     */
 /* =============================== */
 .login-area {
     width: 480px;
-    min-height: 100vh;
+    height: 100vh;           /* altura fixa da viewport */
+    overflow-y: auto;        /* scroll interno */
+    overflow-x: hidden;
     background: var(--surface);
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;   /* evita corte em painéis altos (cadastro) */
-    padding: var(--sp-48);
-    padding-top: 60px;
-    padding-bottom: 60px;
+    justify-content: center;
+    padding: 40px var(--sp-48);
     border-left: 1px solid rgba(110,168,255,0.1);
     position: relative;
-    overflow-y: auto;
+
+    /* FIX: scroll suave */
+    scroll-behavior: smooth;
 }
 
-/* Centraliza verticalmente apenas quando o conteúdo cabe na tela */
-@media (min-height: 700px) {
-    .login-area {
-        justify-content: center;
-    }
-}
-
+/* Linha decorativa no topo — sticky para não rolar */
 .login-area::before {
     content: '';
-    position: absolute;
+    position: sticky;
     top: 0;
     left: 0;
     right: 0;
     height: 3px;
+    display: block;
     background: linear-gradient(90deg,
         transparent 0%,
-        rgba(110,168,255,0.5) 40%,
-        rgba(124,58,237,0.5) 70%,
+        rgba(110,168,255,0.6) 40%,
+        rgba(110,168,255,0.3) 70%,
         transparent 100%
     );
+    z-index: 10;
+    margin-bottom: 0;
+    /* FIX: sem roxo — era rgba(124,58,237,0.5) */
 }
 
-
 /* =============================== */
-/* PAINÉIS MÚLTIPLOS               */
+/* PAINÉIS                         */
 /* =============================== */
 .login-panel {
     display: none;
     flex-direction: column;
-    justify-content: center;
 }
 
 .login-panel.active {
     display: flex;
 }
 
-
 /* =============================== */
-/* TIPOGRAFIA M3                   */
+/* TIPOGRAFIA                      */
 /* =============================== */
-
-/* Display Small → título */
 .login-title {
     font-family: 'Syne', sans-serif;
     font-size: var(--type-display-small);
     font-weight: 700;
     line-height: 1.15;
-    color: var(--text);
+    color: var(--text);        /* FIX: garante branco, sem roxo */
     margin-bottom: var(--sp-8);
 }
 
-/* Body Large → subtítulo */
 .login-sub {
     font-size: var(--type-title-medium);
     color: var(--muted);
@@ -426,9 +397,8 @@ body {
     line-height: 1.5;
 }
 
-
 /* =============================== */
-/* FORM GROUP — escala 4dp         */
+/* FORM GROUP                      */
 /* =============================== */
 .form-group {
     display: flex;
@@ -437,34 +407,28 @@ body {
     margin-bottom: var(--sp-16);
 }
 
-
 /* =============================== */
 /* MD-OUTLINED-TEXT-FIELD          */
-/* 5 estados M3: enabled/hover/    */
-/* focus/error/disabled            */
+/* FIX: sem transform no hover/    */
+/* focus — era o causador do zoom  */
 /* =============================== */
 md-outlined-text-field {
     width: 100%;
     font-family: 'DM Sans', sans-serif;
-    font-size: var(--type-body-medium);
 
-    /* Texto */
     --md-outlined-text-field-input-text-color:       var(--text);
     --md-outlined-text-field-focus-input-text-color: var(--text);
 
-    /* Label */
     --md-outlined-text-field-label-text-color:       var(--muted);
     --md-outlined-text-field-hover-label-text-color: var(--text);
     --md-outlined-text-field-focus-label-text-color: var(--primary);
     --md-outlined-text-field-caret-color:            var(--primary);
 
-    /* Borda — enabled / hover / focus */
     --md-outlined-text-field-outline-color:          rgba(110,168,255,0.22);
     --md-outlined-text-field-hover-outline-color:    rgba(110,168,255,0.5);
     --md-outlined-text-field-focus-outline-color:    var(--primary);
     --md-outlined-text-field-focus-outline-width:    2px;
 
-    /* Erro */
     --md-outlined-text-field-error-outline-color:          var(--error);
     --md-outlined-text-field-error-hover-outline-color:    var(--error);
     --md-outlined-text-field-error-focus-outline-color:    var(--error);
@@ -472,52 +436,47 @@ md-outlined-text-field {
     --md-outlined-text-field-error-focus-label-text-color: var(--error);
     --md-outlined-text-field-error-caret-color:            var(--error);
 
-    /* Disabled — M3: 38% opacidade */
     --md-outlined-text-field-disabled-input-text-color: rgba(232,234,246,0.38);
     --md-outlined-text-field-disabled-outline-color:    rgba(110,168,255,0.12);
     --md-outlined-text-field-disabled-label-text-color: rgba(143,163,191,0.38);
 
-    /* Container */
     --md-outlined-text-field-container-color:   transparent;
     --md-outlined-text-field-container-shape:   12px;
     --md-outlined-text-field-container-height:  56px;
 
-    /* Supporting text */
     --md-outlined-text-field-supporting-text-color:       var(--muted);
     --md-outlined-text-field-error-supporting-text-color: var(--error);
 
     border-radius: 12px;
-    background:
-        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px),
-        linear-gradient(135deg, #0f172a, #16233d);
-    background-size: 18px 18px;
-    transition: all 0.2s ease;
+    background: linear-gradient(135deg, #0f172a, #16233d);
+
+    /* FIX: transition apenas no box-shadow, sem transform */
+    transition: box-shadow 0.2s ease;
 }
 
+/* FIX: hover sem translateY — só sombra */
 md-outlined-text-field:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
 }
 
+/* FIX: focus sem translateY — só sombra */
 md-outlined-text-field:focus-within {
-    transform: translateY(-1px);
     box-shadow:
         0 0 0 4px rgba(110,168,255,0.1),
         0 8px 24px rgba(0,0,0,0.3);
 }
 
-/* Disabled */
 md-outlined-text-field[disabled] {
     opacity: 0.38;
     cursor: not-allowed;
     pointer-events: none;
 }
 
-/* Fix: texto não fica preto no focus (Chromium) */
+/* FIX: font-size 16px evita zoom automático em iOS/Android */
 md-outlined-text-field::part(input) {
     color: var(--text) !important;
     font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
 }
 
 md-outlined-text-field::part(input):focus {
@@ -528,16 +487,13 @@ md-outlined-text-field::part(input)::placeholder {
     color: rgba(232,234,246,0.4);
 }
 
-/* Estado erro via classe JS */
 md-outlined-text-field.error-field {
     --md-outlined-text-field-outline-color:       var(--error);
     --md-outlined-text-field-hover-outline-color: var(--error);
 }
 
-
 /* =============================== */
-/* SUPPORTING TEXT — M3            */
-/* 16px alinhado ao texto do campo */
+/* FIELD ERROR                     */
 /* =============================== */
 .field-error {
     font-size: var(--type-body-small);
@@ -555,16 +511,16 @@ md-outlined-text-field.error-field {
     transform: translateY(0);
 }
 
-
 /* =============================== */
 /* LINHA LEMBRAR / ESQUECI         */
 /* =============================== */
 .remember-row {
     display: flex;
     align-items: center;
-    gap: var(--sp-12);
+    gap: var(--sp-8);
     margin-bottom: var(--sp-24);
     flex-wrap: nowrap;
+    line-height: 1;
 }
 
 .remember-row label {
@@ -572,59 +528,68 @@ md-outlined-text-field.error-field {
     color: var(--muted);
     cursor: pointer;
     user-select: none;
+    line-height: 1;
+    padding-top: 1px;
 }
-
-/* MD-CHECKBOX — todos os tokens para cor azul             */
-/* O componente usa --md-sys-color-primary internamente,   */
-/* sobrescrever só --md-checkbox-* não é suficiente        */
-md-checkbox {
-    /* Borda não selecionado */
-    --md-checkbox-outline-color:                       rgba(110,168,255,0.45);
-    --md-checkbox-hover-outline-color:                 #6ea8ff;
-    --md-checkbox-focus-outline-color:                 #6ea8ff;
-    --md-checkbox-pressed-outline-color:               #6ea8ff;
-
-    /* Selecionado — fundo */
-    --md-checkbox-selected-container-color:            #6ea8ff;
-    --md-checkbox-selected-hover-container-color:      #90bcff;
-    --md-checkbox-selected-focus-container-color:      #6ea8ff;
-    --md-checkbox-selected-pressed-container-color:    #4d8fe0;
-
-    /* Selecionado — ícone do check */
-    --md-checkbox-selected-icon-color:                 #001e45;
-    --md-checkbox-selected-hover-icon-color:           #001e45;
-    --md-checkbox-selected-focus-icon-color:           #001e45;
-    --md-checkbox-selected-pressed-icon-color:         #001e45;
-
-    /* State layer (ripple) */
-    --md-checkbox-hover-state-layer-color:             #6ea8ff;
-    --md-checkbox-focus-state-layer-color:             #6ea8ff;
-    --md-checkbox-pressed-state-layer-color:           #6ea8ff;
-    --md-checkbox-selected-hover-state-layer-color:    #6ea8ff;
-    --md-checkbox-selected-focus-state-layer-color:    #6ea8ff;
-    --md-checkbox-selected-pressed-state-layer-color:  #6ea8ff;
-
-    /* Token de sistema — fonte interna do M3 para cor primary */
-    --md-sys-color-primary:                            #6ea8ff;
-    --md-sys-color-on-primary:                         #001e45;
-
-    flex-shrink: 0;
-    cursor: pointer;
-}
-
-/* Fallback nativo (caso md-checkbox não carregue) */
-input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: #6ea8ff;
-    cursor: pointer;
-    flex-shrink: 0;
-}
-
 
 /* =============================== */
-/* LINK "ESQUECI A SENHA"          */
-/* State Layer M3                  */
+/* CHECKBOX NATIVO — AZUL          */
+/* FIX: substituímos md-checkbox   */
+/* (roxo, não sobrescreve via CSS) */
+/* por input nativo estilizado     */
+/* =============================== */
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    display: block;
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    min-height: 18px;
+    border: 2px solid rgba(110,168,255,0.5);
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+input[type="checkbox"]:hover {
+    border-color: var(--primary);
+    background: rgba(110,168,255,0.08);
+    box-shadow: 0 0 0 3px rgba(110,168,255,0.12);
+}
+
+input[type="checkbox"]:checked {
+    background: var(--primary);      /* azul */
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(110,168,255,0.2);
+}
+
+/* checkmark */
+input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 5px;
+    height: 10px;
+    border: 2px solid #001e45;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg);
+}
+
+input[type="checkbox"]:focus-visible {
+    outline: 2px solid rgba(110,168,255,0.6);
+    outline-offset: 2px;
+}
+
+/* =============================== */
+/* LINK ESQUECI A SENHA            */
 /* =============================== */
 .link-recuperar {
     margin-left: auto;
@@ -638,19 +603,15 @@ input[type="checkbox"] {
     transition: background 0.2s ease;
 }
 
-.link-recuperar:hover {
-    background: var(--primary-hover);
-}
+.link-recuperar:hover { background: var(--primary-hover); }
 
 .link-recuperar:focus-visible {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
 
-
 /* =============================== */
-/* BOTÃO — M3 FilledButton         */
-/* Pill shape (border-radius 20px) */
+/* BOTÃO                           */
 /* =============================== */
 .btn-login {
     width: 100%;
@@ -671,7 +632,6 @@ input[type="checkbox"] {
     margin-bottom: var(--sp-4);
 }
 
-/* State Layer M3 */
 .btn-login::after {
     content: '';
     position: absolute;
@@ -685,9 +645,7 @@ input[type="checkbox"] {
 .btn-login:active::after { background: rgba(0,0,0,0.12); }
 
 .btn-login:hover {
-    box-shadow:
-        0 1px 2px rgba(0,0,0,0.3),
-        0 2px 6px rgba(110,168,255,0.2);
+    box-shadow: 0 2px 8px rgba(110,168,255,0.3);
 }
 
 .btn-login:active { transform: scale(0.99); }
@@ -705,7 +663,62 @@ input[type="checkbox"] {
 
 
 /* =============================== */
-/* ALERTAS — M3 com borda lateral  */
+/* LINHA DE BOTÕES                 */
+/* =============================== */
+.btn-row {
+    display: flex;
+    gap: var(--sp-8);
+    margin-bottom: var(--sp-4);
+}
+
+.btn-row .btn-login {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+/* Botão secundário — Limpar */
+.btn-secondary {
+    flex-shrink: 0;
+    width: 96px;
+    height: 48px;
+    background: transparent;
+    color: var(--primary);
+    border: 1.5px solid rgba(110,168,255,0.35);
+    border-radius: 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: var(--type-label-large);
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-secondary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(110,168,255,0);
+    transition: background 0.2s ease;
+    border-radius: inherit;
+}
+
+.btn-secondary:hover {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(110,168,255,0.1);
+}
+
+.btn-secondary:hover::after  { background: rgba(110,168,255,0.08); }
+.btn-secondary:active::after { background: rgba(110,168,255,0.15); }
+
+.btn-secondary:active { transform: scale(0.98); }
+
+.btn-secondary:focus-visible {
+    outline: 2px solid rgba(110,168,255,0.5);
+    outline-offset: 2px;
+}
+/* =============================== */
+/* ALERTAS                         */
 /* =============================== */
 .alert-msg {
     padding: var(--sp-12) var(--sp-16);
@@ -731,9 +744,8 @@ input[type="checkbox"] {
     display: block;
 }
 
-
 /* =============================== */
-/* FOOTER LINKS — State Layer M3   */
+/* FOOTER LINKS                    */
 /* =============================== */
 .login-footer-links {
     text-align: center;
@@ -752,15 +764,12 @@ input[type="checkbox"] {
     transition: background 0.2s ease;
 }
 
-.link-acao:hover {
-    background: var(--primary-hover);
-}
+.link-acao:hover { background: var(--primary-hover); }
 
 .link-acao:focus-visible {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
-
 
 /* =============================== */
 /* SOBRE O SISTEMA                 */
@@ -783,18 +792,9 @@ input[type="checkbox"] {
     transition: background 0.2s ease;
 }
 
-.sobre-sistema details summary:hover {
-    background: var(--primary-hover);
-}
-
-.sobre-sistema details summary::before {
-    content: '▸ ';
-    color: var(--primary);
-}
-
-.sobre-sistema details[open] summary::before {
-    content: '▾ ';
-}
+.sobre-sistema details summary:hover { background: var(--primary-hover); }
+.sobre-sistema details summary::before       { content: '▸ '; color: var(--primary); }
+.sobre-sistema details[open] summary::before { content: '▾ '; }
 
 .sobre-sistema details p {
     margin-top: var(--sp-8);
@@ -804,13 +804,11 @@ input[type="checkbox"] {
     padding-left: var(--sp-16);
 }
 
-
 /* =============================== */
 /* RESPONSIVO                      */
 /* =============================== */
 @media (max-width: 900px) {
     .left-panel { display: none; }
-
     .login-area {
         width: 100%;
         padding: var(--sp-48) var(--sp-32);
@@ -818,6 +816,6 @@ input[type="checkbox"] {
 }
 
 @media (max-width: 480px) {
-    .login-area   { padding: var(--sp-32) var(--sp-24); }
-    .login-title  { font-size: 1.75rem; }
+    .login-area  { padding: var(--sp-32) var(--sp-24); }
+    .login-title { font-size: 1.75rem; }
 }
