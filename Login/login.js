@@ -1,42 +1,20 @@
 // ===============================
-// CARREGAMENTO DO HTML PRINCIPAL
-// ===============================
-
-// Carrega o conteúdo de main.html dentro da <main id="main">
-fetch('main.html')
-.then(response => response.text())
-.then(data => {
-    document.getElementById('main').innerHTML = data;
-});
-
-// ===============================
 // CHAVES DO STORAGE
 // ===============================
-const STORAGE_KEY_USUARIOS = 'sysprod_usuarios';   // localStorage — array de usuários cadastrados
-const STORAGE_KEY_LEMBRAR  = 'lembrarSenha';       // localStorage — flag lembrar-me
-const STORAGE_KEY_USUARIO_LEMBRADO  = 'usuarioGuardado'; // localStorage — usuário lembrado
-const STORAGE_KEY_SENHA_LEMBRADA    = 'senhaGuardada';   // localStorage — senha lembrada
-const SESSION_USUARIO_LOGADO = 'usuarioLogado';    // sessionStorage — nome do usuário ativo
+const STORAGE_KEY_USUARIOS         = 'sysprod_usuarios';
+const STORAGE_KEY_LEMBRAR          = 'lembrarSenha';
+const STORAGE_KEY_USUARIO_LEMBRADO = 'usuarioGuardado';
+const STORAGE_KEY_SENHA_LEMBRADA   = 'senhaGuardada';
+const SESSION_USUARIO_LOGADO       = 'usuarioLogado';
 
 
 // ===============================
-// CARREGAR USUÁRIOS SALVOS
+// CARREGAR / SALVAR USUÁRIOS
 // ===============================
-
-/**
- * Retorna o array de usuários cadastrados no localStorage.
- * Caso não haja nada, retorna array vazio.
- * @returns {Array}
- */
 function carregarUsuarios() {
     return JSON.parse(localStorage.getItem(STORAGE_KEY_USUARIOS)) || [];
 }
 
-
-/**
- * Persiste o array de usuários no localStorage.
- * @param {Array} usuarios
- */
 function salvarUsuarios(usuarios) {
     localStorage.setItem(STORAGE_KEY_USUARIOS, JSON.stringify(usuarios));
 }
@@ -45,63 +23,127 @@ function salvarUsuarios(usuarios) {
 // ===============================
 // CONTROLE DE PAINÉIS
 // ===============================
-
-/**
- * Exibe apenas o painel com o id informado.
- * Oculta todos os outros painéis (.login-panel).
- * @param {string} id — ex: 'panel-login', 'panel-cadastro', 'panel-recuperar'
- */
 function showPanel(id) {
-    document.querySelectorAll('.login-panel').forEach(panel => {
-        panel.classList.remove('active');
-    });
-
+    document.querySelectorAll('.login-panel').forEach(p => p.classList.remove('active'));
     const alvo = document.getElementById(id);
     if (alvo) alvo.classList.add('active');
 }
 
 
 // ===============================
-// FUNÇÕES DE VALIDAÇÃO DE CAMPO
+// VALIDAÇÃO — compatível com
+// md-outlined-text-field e inputs nativos
 // ===============================
-
-/**
- * Marca um campo como inválido: borda vermelha + mensagem de erro.
- * @param {HTMLElement} inputEl — o <input>
- * @param {HTMLElement} errEl   — o <div class="field-error">
- * @param {string}      msg     — texto da mensagem (opcional; usa o texto já no HTML se omitido)
- */
 function showError(inputEl, errEl, msg) {
-    inputEl.classList.add('error-field');
-    if (msg) errEl.textContent = msg;
-    errEl.classList.add('show');
+    if (inputEl) inputEl.classList.add('error-field');
+    if (errEl) {
+        if (msg) errEl.textContent = msg;
+        errEl.classList.add('show');
+    }
 }
 
-
-/**
- * Remove o estado de erro de um campo.
- * @param {HTMLElement} inputEl
- * @param {HTMLElement} errEl
- */
 function clearError(inputEl, errEl) {
-    inputEl.classList.remove('error-field');
-    errEl.classList.remove('show');
+    if (inputEl) inputEl.classList.remove('error-field');
+    if (errEl) errEl.classList.remove('show');
 }
 
 
 // ===============================
-// INICIALIZAÇÃO (após fetch do HTML)
+// HELPERS — md Web Components
 // ===============================
 
-// login.js é carregado ANTES do fetch terminar,
-// portanto toda a lógica fica dentro do MutationObserver
-// que aguarda os elementos aparecerem no DOM.
+// Valor de md-outlined-text-field ou input nativo
+function getValue(el)    { return el ? (el.value || '').trim() : ''; }
+function getRawValue(el) { return el ? (el.value || '') : ''; }
+function clearValue(el)  { if (el) el.value = ''; }
+
+// Estado checked de md-checkbox ou input nativo
+function isChecked(el)         { return el ? el.checked : false; }
+function setChecked(el, value) { if (el) el.checked = value; }
+
+
+// ===============================
+// LOADING STATE NO BOTÃO
+// ===============================
+function setBtnLoading(btn, loading, texto) {
+    if (!btn) return;
+    if (loading) {
+        btn.classList.add('loading');
+        btn.textContent = 'Aguarde...';
+    } else {
+        btn.classList.remove('loading');
+        btn.textContent = texto;
+    }
+}
+
+
+// ===============================
+// TRANSIÇÃO HERO → LOGIN
+// ===============================
+(function iniciarTransicao() {
+    const heroWrapper = document.getElementById('hero-wrapper');
+    const appWrapper  = document.getElementById('app-wrapper');
+    const scrollHint  = document.getElementById('scrollHint');
+
+    if (!heroWrapper || !appWrapper) return;
+
+    let transitioned = false;
+
+    function triggerTransition() {
+        if (transitioned) return;
+        transitioned = true;
+
+        heroWrapper.classList.add('hero-hidden');
+
+        setTimeout(() => {
+            appWrapper.classList.add('app-visible');
+        }, 100);
+    }
+
+    // Roda do mouse para baixo
+    window.addEventListener('wheel', e => {
+        if (e.deltaY > 0) triggerTransition();
+    }, { passive: true });
+
+    // Swipe para baixo no touch
+    let touchStartY = 0;
+    window.addEventListener('touchstart', e => {
+        touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    window.addEventListener('touchend', e => {
+        if (touchStartY - e.changedTouches[0].clientY > 40) triggerTransition();
+    }, { passive: true });
+
+    // Clique no botão scroll
+    if (scrollHint) scrollHint.addEventListener('click', triggerTransition);
+
+    // Teclas: seta baixo, espaço, page down
+    window.addEventListener('keydown', e => {
+        if (['ArrowDown', ' ', 'PageDown'].includes(e.key)) {
+            e.preventDefault();
+            triggerTransition();
+        }
+    });
+})();
+
+
+// ===============================
+// CARREGAR MAIN.HTML
+// ===============================
+fetch('main.html')
+    .then(r => r.text())
+    .then(data => {
+        document.getElementById('main').innerHTML = data;
+    });
+
+
+// ===============================
+// INICIALIZAÇÃO — espera o DOM
+// do main.html via MutationObserver
+// ===============================
 const observer = new MutationObserver(() => {
-
-    // Aguarda o elemento-raiz do painel de login aparecer
     if (!document.getElementById('panel-login')) return;
-
-    // Elementos existem — para o observer e inicia
     observer.disconnect();
     iniciarLogin();
 });
@@ -114,280 +156,253 @@ observer.observe(document.getElementById('main'), { childList: true, subtree: tr
 // ===============================
 function iniciarLogin() {
 
-    // ===============================
-    // SELEÇÃO DE ELEMENTOS
-    // ===============================
-
     // — Painel Login —
-    const inputUsuario = document.getElementById('inputUsuario');
-    const inputSenha   = document.getElementById('inputSenha');
-    const chkLembrar   = document.getElementById('lembrarSenha');
-    const btnLogin     = document.getElementById('btnLogin');
-    const alertMsg     = document.getElementById('alertMsg');
-    const linkCadastrar  = document.getElementById('linkCadastrar');
-    const linkRecuperar  = document.getElementById('linkRecuperar');
+    const inputUsuario    = document.getElementById('inputUsuario');
+    const inputSenha      = document.getElementById('inputSenha');
+    const chkLembrar      = document.getElementById('lembrarSenha');
+    const btnLogin        = document.getElementById('btnLogin');
+    const alertMsg        = document.getElementById('alertMsg');
+    const linkCadastrar   = document.getElementById('linkCadastrar');
+    const linkRecuperar   = document.getElementById('linkRecuperar');
 
     // — Painel Cadastro —
-    const cadNome      = document.getElementById('cadNome');
-    const cadUsuario   = document.getElementById('cadUsuario');
-    const cadEmail     = document.getElementById('cadEmail');
-    const cadSenha     = document.getElementById('cadSenha');
-    const cadConfSenha = document.getElementById('cadConfSenha');
-    const btnCadastrar = document.getElementById('btnCadastrar');
-    const alertCadastro = document.getElementById('alertCadastro');
+    const cadNome         = document.getElementById('cadNome');
+    const cadUsuario      = document.getElementById('cadUsuario');
+    const cadEmail        = document.getElementById('cadEmail');
+    const cadSenha        = document.getElementById('cadSenha');
+    const cadConfSenha    = document.getElementById('cadConfSenha');
+    const btnCadastrar    = document.getElementById('btnCadastrar');
+    const alertCadastro   = document.getElementById('alertCadastro');
     const linkVoltarLogin = document.getElementById('linkVoltarLogin');
 
     // — Painel Recuperar —
-    const recEmail     = document.getElementById('recEmail');
-    const btnRecuperar = document.getElementById('btnRecuperar');
-    const alertRecuperar = document.getElementById('alertRecuperar');
-    const linkVoltarLogin2 = document.getElementById('linkVoltarLogin2');
+    const recEmail          = document.getElementById('recEmail');
+    const btnRecuperar      = document.getElementById('btnRecuperar');
+    const alertRecuperar    = document.getElementById('alertRecuperar');
+    const linkVoltarLogin2  = document.getElementById('linkVoltarLogin2');
 
 
     // ===============================
-    // CARREGAR DADOS SALVOS (LEMBRAR-ME)
+    // LEMBRAR-ME — restaurar dados
+    // Aguarda custom elements M3
     // ===============================
+    if (localStorage.getItem(STORAGE_KEY_LEMBRAR) === 'true') {
+        const u = localStorage.getItem(STORAGE_KEY_USUARIO_LEMBRADO);
+        const s = localStorage.getItem(STORAGE_KEY_SENHA_LEMBRADA);
 
-    const lembrado = localStorage.getItem(STORAGE_KEY_LEMBRAR);
+        const definirValores = () => {
+            setChecked(chkLembrar, true);
+            if (u && inputUsuario) inputUsuario.value = u;
+            if (s && inputSenha)   inputSenha.value   = s;
+        };
 
-    if (lembrado === 'true') {
-        // Marca o checkbox
-        chkLembrar.checked = true;
-
-        // Preenche os campos automaticamente
-        const usuarioGuardado = localStorage.getItem(STORAGE_KEY_USUARIO_LEMBRADO);
-        const senhaGuardada   = localStorage.getItem(STORAGE_KEY_SENHA_LEMBRADA);
-
-        if (usuarioGuardado) inputUsuario.value = usuarioGuardado;
-        if (senhaGuardada)   inputSenha.value   = senhaGuardada;
+        // Tenta via customElements, com fallback imediato
+        Promise.all([
+            customElements.whenDefined('md-outlined-text-field').catch(() => {}),
+            customElements.whenDefined('md-checkbox').catch(() => {})
+        ]).then(definirValores).catch(definirValores);
     }
 
 
     // ===============================
-    // REMOVER ERROS AO DIGITAR — LOGIN
+    // LIMPAR ERROS AO DIGITAR
     // ===============================
-    inputUsuario.addEventListener('input', () => clearError(inputUsuario, document.getElementById('erroUsuario')));
-    inputSenha.addEventListener('input',   () => clearError(inputSenha,   document.getElementById('erroSenha')));
+    inputUsuario?.addEventListener('input', () =>
+        clearError(inputUsuario, document.getElementById('erroUsuario')));
+    inputSenha?.addEventListener('input', () =>
+        clearError(inputSenha, document.getElementById('erroSenha')));
+
+    cadNome?.addEventListener('input',      () => clearError(cadNome,      document.getElementById('erroCadNome')));
+    cadUsuario?.addEventListener('input',   () => clearError(cadUsuario,   document.getElementById('erroCadUsuario')));
+    cadEmail?.addEventListener('input',     () => clearError(cadEmail,     document.getElementById('erroCadEmail')));
+    cadSenha?.addEventListener('input',     () => clearError(cadSenha,     document.getElementById('erroCadSenha')));
+    cadConfSenha?.addEventListener('input', () => clearError(cadConfSenha, document.getElementById('erroCadConfSenha')));
+    recEmail?.addEventListener('input',     () => clearError(recEmail,     document.getElementById('erroRecEmail')));
 
 
     // ===============================
     // NAVEGAÇÃO ENTRE PAINÉIS
     // ===============================
-
-    // Ir para cadastro
-    linkCadastrar.addEventListener('click', e => {
+    linkCadastrar?.addEventListener('click', e => {
         e.preventDefault();
-        alertCadastro.className = 'alert-msg';
+        if (alertCadastro) alertCadastro.className = 'alert-msg';
         showPanel('panel-cadastro');
     });
 
-    // Ir para recuperar senha
-    linkRecuperar.addEventListener('click', e => {
+    linkRecuperar?.addEventListener('click', e => {
         e.preventDefault();
-        alertRecuperar.className = 'alert-msg';
+        if (alertRecuperar) alertRecuperar.className = 'alert-msg';
         showPanel('panel-recuperar');
     });
 
-    // Voltar para login (do cadastro)
-    linkVoltarLogin.addEventListener('click', e => {
-        e.preventDefault();
-        showPanel('panel-login');
-    });
-
-    // Voltar para login (do recuperar)
-    linkVoltarLogin2.addEventListener('click', e => {
-        e.preventDefault();
-        showPanel('panel-login');
-    });
+    linkVoltarLogin?.addEventListener('click',  e => { e.preventDefault(); showPanel('panel-login'); });
+    linkVoltarLogin2?.addEventListener('click', e => { e.preventDefault(); showPanel('panel-login'); });
 
 
     // ===============================
     // EVENTO: ENTRAR NO SISTEMA
     // ===============================
-    btnLogin.addEventListener('click', function () {
+    btnLogin?.addEventListener('click', function () {
 
         let valido = true;
 
-        // Limpa alerta anterior
-        alertMsg.className = 'alert-msg';
-        alertMsg.textContent = '';
+        if (alertMsg) { alertMsg.className = 'alert-msg'; alertMsg.textContent = ''; }
 
-        // — Valida usuário —
-        if (!inputUsuario.value.trim()) {
-            showError(inputUsuario, document.getElementById('erroUsuario'), 'Por favor, informe seu usuário.');
+        if (!getValue(inputUsuario)) {
+            showError(inputUsuario, document.getElementById('erroUsuario'),
+                'Por favor, informe seu usuário.');
             valido = false;
         }
 
-        // — Valida senha —
-        if (!inputSenha.value.trim()) {
-            showError(inputSenha, document.getElementById('erroSenha'), 'Por favor, informe sua senha.');
+        if (!getRawValue(inputSenha)) {
+            showError(inputSenha, document.getElementById('erroSenha'),
+                'Por favor, informe sua senha.');
             valido = false;
         }
 
         if (!valido) return;
 
-        // ===============================
-        // VERIFICAR CREDENCIAIS
-        // ===============================
-        const usuarios = carregarUsuarios();
-        const usuario = usuarios.find(
-            u => u.usuario === inputUsuario.value.trim() && u.senha === inputSenha.value
-        );
-
-        if (!usuario) {
-            alertMsg.textContent = 'Usuário ou senha incorretos.';
-            alertMsg.classList.add('error');
-            return;
-        }
-
-        // ===============================
-        // LEMBRAR-ME (LOCALSTORAGE)
-        // ===============================
-        if (chkLembrar.checked) {
-            localStorage.setItem(STORAGE_KEY_LEMBRAR,          'true');
-            localStorage.setItem(STORAGE_KEY_USUARIO_LEMBRADO, inputUsuario.value.trim());
-            localStorage.setItem(STORAGE_KEY_SENHA_LEMBRADA,   inputSenha.value);
-        } else {
-            localStorage.removeItem(STORAGE_KEY_LEMBRAR);
-            localStorage.removeItem(STORAGE_KEY_USUARIO_LEMBRADO);
-            localStorage.removeItem(STORAGE_KEY_SENHA_LEMBRADA);
-        }
-
-        // ===============================
-        // SESSÃO DO USUÁRIO (SESSIONSTORAGE)
-        // ===============================
-        sessionStorage.setItem(SESSION_USUARIO_LOGADO, usuario.nome || inputUsuario.value.trim());
-
-        // ===============================
-        // FEEDBACK + REDIRECIONAMENTO
-        // ===============================
-        alertMsg.textContent = 'Login realizado com sucesso! Redirecionando...';
-        alertMsg.classList.add('success');
+        setBtnLoading(btnLogin, true, 'Entrar no Sistema');
 
         setTimeout(() => {
-            window.location.href = '../Index/index.html';
-        }, 1000);
+            const usuarios = carregarUsuarios();
+            const usuario  = usuarios.find(
+                u => u.usuario === getValue(inputUsuario) &&
+                     u.senha   === getRawValue(inputSenha)
+            );
 
+            if (!usuario) {
+                setBtnLoading(btnLogin, false, 'Entrar no Sistema');
+                if (alertMsg) {
+                    alertMsg.textContent = 'Usuário ou senha incorretos.';
+                    alertMsg.className   = 'alert-msg error';
+                }
+                showError(inputUsuario, document.getElementById('erroUsuario'), ' ');
+                showError(inputSenha,   document.getElementById('erroSenha'),   ' ');
+                return;
+            }
+
+            // Lembrar-me
+            if (isChecked(chkLembrar)) {
+                localStorage.setItem(STORAGE_KEY_LEMBRAR,           'true');
+                localStorage.setItem(STORAGE_KEY_USUARIO_LEMBRADO,  getValue(inputUsuario));
+                localStorage.setItem(STORAGE_KEY_SENHA_LEMBRADA,    getRawValue(inputSenha));
+            } else {
+                localStorage.removeItem(STORAGE_KEY_LEMBRAR);
+                localStorage.removeItem(STORAGE_KEY_USUARIO_LEMBRADO);
+                localStorage.removeItem(STORAGE_KEY_SENHA_LEMBRADA);
+            }
+
+            sessionStorage.setItem(SESSION_USUARIO_LOGADO,
+                usuario.nome || getValue(inputUsuario));
+
+            if (alertMsg) {
+                alertMsg.textContent = 'Login realizado! Redirecionando...';
+                alertMsg.className   = 'alert-msg success';
+            }
+
+            setTimeout(() => { window.location.href = '../Index/index.html'; }, 1000);
+
+        }, 400);
     });
-
-
-    // ===============================
-    // REMOVER ERROS AO DIGITAR — CADASTRO
-    // ===============================
-    cadNome.addEventListener('input',      () => clearError(cadNome,      document.getElementById('erroCadNome')));
-    cadUsuario.addEventListener('input',   () => clearError(cadUsuario,   document.getElementById('erroCadUsuario')));
-    cadEmail.addEventListener('input',     () => clearError(cadEmail,     document.getElementById('erroCadEmail')));
-    cadSenha.addEventListener('input',     () => clearError(cadSenha,     document.getElementById('erroCadSenha')));
-    cadConfSenha.addEventListener('input', () => clearError(cadConfSenha, document.getElementById('erroCadConfSenha')));
 
 
     // ===============================
     // EVENTO: CRIAR CONTA
     // ===============================
-    btnCadastrar.addEventListener('click', function () {
+    btnCadastrar?.addEventListener('click', function () {
 
         let valido = true;
+        const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        // Limpa alerta anterior
-        alertCadastro.className = 'alert-msg';
-        alertCadastro.textContent = '';
+        if (alertCadastro) { alertCadastro.className = 'alert-msg'; alertCadastro.textContent = ''; }
 
-        // — Valida nome —
-        if (!cadNome.value.trim()) {
+        if (!getValue(cadNome)) {
             showError(cadNome, document.getElementById('erroCadNome'), 'Por favor, informe seu nome.');
             valido = false;
         }
-
-        // — Valida usuário —
-        if (!cadUsuario.value.trim()) {
+        if (!getValue(cadUsuario)) {
             showError(cadUsuario, document.getElementById('erroCadUsuario'), 'Por favor, informe um nome de usuário.');
             valido = false;
         }
-
-        // — Valida e-mail —
-        const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!regexEmail.test(cadEmail.value.trim())) {
+        if (!regexEmail.test(getValue(cadEmail))) {
             showError(cadEmail, document.getElementById('erroCadEmail'), 'Informe um e-mail válido.');
             valido = false;
         }
-
-        // — Valida senha —
-        if (cadSenha.value.length < 6) {
+        if (getRawValue(cadSenha).length < 6) {
             showError(cadSenha, document.getElementById('erroCadSenha'), 'A senha precisa ter ao menos 6 caracteres.');
             valido = false;
         }
-
-        // — Valida confirmação de senha —
-        if (cadConfSenha.value !== cadSenha.value) {
+        if (getRawValue(cadConfSenha) !== getRawValue(cadSenha)) {
             showError(cadConfSenha, document.getElementById('erroCadConfSenha'), 'As senhas não coincidem.');
             valido = false;
         }
 
         if (!valido) return;
 
-        // ===============================
-        // VERIFICAR USUÁRIO JÁ EXISTENTE
-        // ===============================
-        const usuarios = carregarUsuarios();
-        const jaExiste = usuarios.some(u => u.usuario === cadUsuario.value.trim());
+        setBtnLoading(btnCadastrar, true, 'Criar Conta');
 
-        if (jaExiste) {
-            alertCadastro.textContent = 'Este nome de usuário já está em uso. Escolha outro.';
-            alertCadastro.classList.add('error');
-            return;
-        }
+        setTimeout(() => {
+            const usuarios = carregarUsuarios();
 
-        // ===============================
-        // SALVAR NOVO USUÁRIO
-        // ===============================
-        usuarios.push({
-            nome:    cadNome.value.trim(),
-            usuario: cadUsuario.value.trim(),
-            email:   cadEmail.value.trim(),
-            senha:   cadSenha.value
-        });
+            if (usuarios.some(u => u.usuario === getValue(cadUsuario))) {
+                setBtnLoading(btnCadastrar, false, 'Criar Conta');
+                if (alertCadastro) {
+                    alertCadastro.textContent = 'Este usuário já está em uso. Escolha outro.';
+                    alertCadastro.className   = 'alert-msg error';
+                }
+                return;
+            }
 
-        salvarUsuarios(usuarios);
+            usuarios.push({
+                nome:    getValue(cadNome),
+                usuario: getValue(cadUsuario),
+                email:   getValue(cadEmail),
+                senha:   getRawValue(cadSenha)
+            });
 
-        // Feedback de sucesso
-        alertCadastro.textContent = 'Conta criada com sucesso! Faça login para continuar.';
-        alertCadastro.classList.add('success');
+            salvarUsuarios(usuarios);
+            setBtnLoading(btnCadastrar, false, 'Criar Conta');
 
-        // Limpa campos
-        cadNome.value = cadUsuario.value = cadEmail.value = cadSenha.value = cadConfSenha.value = '';
+            if (alertCadastro) {
+                alertCadastro.textContent = 'Conta criada! Faça login para continuar.';
+                alertCadastro.className   = 'alert-msg success';
+            }
 
-        // Volta para o login após 1,5s
-        setTimeout(() => showPanel('panel-login'), 1500);
+            [cadNome, cadUsuario, cadEmail, cadSenha, cadConfSenha].forEach(clearValue);
+
+            setTimeout(() => showPanel('panel-login'), 1500);
+
+        }, 400);
     });
 
 
     // ===============================
-    // REMOVER ERRO AO DIGITAR — RECUPERAR
+    // EVENTO: RECUPERAR SENHA (POC)
     // ===============================
-    recEmail.addEventListener('input', () => clearError(recEmail, document.getElementById('erroRecEmail')));
+    btnRecuperar?.addEventListener('click', function () {
 
-
-    // ===============================
-    // EVENTO: RECUPERAR SENHA (POC — SIMULADO)
-    // ===============================
-    btnRecuperar.addEventListener('click', function () {
-
-        // Limpa alerta anterior
-        alertRecuperar.className = 'alert-msg';
-        alertRecuperar.textContent = '';
+        if (alertRecuperar) { alertRecuperar.className = 'alert-msg'; alertRecuperar.textContent = ''; }
 
         const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const email = getValue(recEmail);
 
-        if (!regexEmail.test(recEmail.value.trim())) {
+        if (!regexEmail.test(email)) {
             showError(recEmail, document.getElementById('erroRecEmail'), 'Informe um e-mail válido.');
             return;
         }
 
-        // Simula envio (POC — sem backend)
-        alertRecuperar.textContent = 'Instruções enviadas para ' + recEmail.value.trim() + '. Verifique sua caixa de entrada.';
-        alertRecuperar.classList.add('success');
+        setBtnLoading(btnRecuperar, true, 'Enviar Instruções');
 
-        recEmail.value = '';
+        setTimeout(() => {
+            setBtnLoading(btnRecuperar, false, 'Enviar Instruções');
+
+            if (alertRecuperar) {
+                alertRecuperar.textContent = 'Instruções enviadas para ' + email + '. Verifique sua caixa de entrada.';
+                alertRecuperar.className   = 'alert-msg success';
+            }
+
+            clearValue(recEmail);
+        }, 600);
     });
 }
-

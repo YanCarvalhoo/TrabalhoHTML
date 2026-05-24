@@ -1,6 +1,5 @@
 /* =============================== */
-/* RESET GLOBAL */
-/* Remove margens e padroniza box */
+/* RESET GLOBAL                    */
 /* =============================== */
 *, *::before, *::after {
     box-sizing: border-box;
@@ -10,244 +9,244 @@
 
 
 /* =============================== */
-/* VARIÁVEIS (TEMA DO SISTEMA) */
+/* VARIÁVEIS — M3 COLOR TOKENS     */
+/* Definidas UMA única vez aqui    */
 /* =============================== */
 :root {
-    --bg: #0a0e1a;        /* Fundo principal */
-    --surface: #111827;   /* Fundo do painel */
-    --border: #1e2d40;    /* Bordas */
-    --accent: #00d4ff;    /* Cor destaque */
-    --accent2: #7c3aed;   /* Cor secundária */
-    --text: #e8eaf6;      /* Texto principal */
-    --muted: #6b7a99;     /* Texto secundário */
-    --error: #ff4d6d;     /* Erro */
-    --success: #00e5a0;   /* Sucesso */
+    /* Superfícies */
+    --bg:             #0a0e1a;
+    --surface:        color-mix(in srgb, #6ea8ff 5%, #111827);
+    --surface-variant: #1a2540;
+    --border:         #1e2d40;
+
+    /* Cores primárias */
+    --primary:        #6ea8ff;
+    --on-primary:     #001e45;
+    --primary-hover:  rgba(110,168,255,0.12);
+
+    /* Alias para compatibilidade */
+    --accent:         #6ea8ff;
+    --accent2:        #7c3aed;
+
+    /* Texto */
+    --text:   #e8eaf6;
+    --muted:  #8fa3bf;
+
+    /* Semânticas */
+    --error:             #ffb4ab;
+    --error-container:   rgba(255,180,171,0.12);
+    --on-error-container:#690005;
+    --success:           #00e5a0;
+
+    /* Tipografia M3 — escala de roles */
+    --type-display-small: 2rem;       /* 32sp */
+    --type-title-large:   1.375rem;   /* 22sp */
+    --type-title-medium:  1rem;       /* 16sp */
+    --type-body-medium:   0.875rem;   /* 14sp */
+    --type-body-small:    0.75rem;    /* 12sp */
+    --type-label-large:   0.875rem;   /* 14sp / weight 500 */
+
+    /* Espaçamento M3 — múltiplos de 4dp */
+    --sp-4:  4px;
+    --sp-8:  8px;
+    --sp-12: 12px;
+    --sp-16: 16px;
+    --sp-24: 24px;
+    --sp-32: 32px;
+    --sp-48: 48px;
 }
 
 
-
 /* =============================== */
-/* RESET GLOBAL */
+/* BODY                            */
 /* =============================== */
-
-*, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-/* =============================== */
-/* VARIÁVEIS */
-/* =============================== */
-
-:root {
-    --bg: #0a0e1a;
-    --surface: #111827;
-    --border: #1e2d40;
-    --accent: #6ea8ff;
-    --accent2: #7c3aed;
-    --text: #e8eaf6;
-    --muted: #6b7a99;
-    --error: #ff5f7a;
-    --success: #00e5a0;
-}
-
-/* =============================== */
-/* BODY */
-/* =============================== */
-
 body {
     font-family: 'DM Sans', sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
     display: flex;
+    align-items: stretch;
     overflow: hidden;
 }
 
-/* =============================== */
-/* FORM GROUP */
-/* =============================== */
 
-.form-group {
+/* =============================== */
+/* HERO SCREEN — tela inicial      */
+/* =============================== */
+#hero-wrapper {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: var(--bg);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+#hero-wrapper.hero-hidden {
+    opacity: 0;
+    transform: translateY(-40px);
+    pointer-events: none;
+}
+
+#hero-wrapper .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(37,99,235,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(37,99,235,0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+}
+
+#hero-wrapper::before {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(37,99,235,0.12) 0%, transparent 70%);
+    top: -150px;
+    left: -150px;
+    pointer-events: none;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 560px;
+    padding: 0 var(--sp-24);
+}
+
+.hero-brand {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+}
+
+.hero-tagline {
+    font-size: var(--type-body-small);
+    color: #94a3b8;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: var(--sp-48);
+}
+
+.hero-h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.8rem, 6vw, 4rem);
+    font-weight: 800;
+    line-height: 1.08;
+    color: var(--text);
+    margin-bottom: var(--sp-24);
+}
+
+.hero-h1 span {
+    color: var(--primary);
+}
+
+.hero-desc {
+    color: #94a3b8;
+    font-size: var(--type-title-medium);
+    line-height: 1.7;
+    max-width: 400px;
+    margin: 0 auto var(--sp-48);
+}
+
+/* Indicador scroll */
+.scroll-hint {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    margin-bottom: 18px;
-}
-
-/* =============================== */
-/* MATERIAL OUTLINED FIELD (FIX FINAL) */
-/* =============================== */
-
-md-outlined-text-field {
-    width: 100%;
-
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-
-    /* TEXTO (FIX PRETO NO FOCUS) */
-    --md-outlined-text-field-input-text-color: var(--text);
-    --md-outlined-text-field-focus-input-text-color: var(--text);
-
-    /* LABEL */
-    --md-outlined-text-field-label-text-color: var(--muted);
-    --md-outlined-text-field-focus-label-text-color: var(--accent);
-    --md-outlined-text-field-caret-color: var(--accent);
-
-    /* BORDA */
-    --md-outlined-text-field-outline-color: rgba(110,168,255,0.18);
-    --md-outlined-text-field-hover-outline-color: rgba(110,168,255,0.35);
-    --md-outlined-text-field-focus-outline-color: var(--accent);
-
-    /* FUNDO */
-    --md-outlined-text-field-container-color: transparent;
-
-    /* FORMATO */
-    --md-outlined-text-field-container-shape: 18px;
-    --md-outlined-text-field-container-height: 56px;
-
-    border-radius: 18px;
-
-    /* GRID SUAVE */
-    background:
-        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px),
-        linear-gradient(135deg, #0f172a, #16233d);
-
-    background-size: 18px 18px;
-
-    box-shadow:
-        inset 0 1px 1px rgba(255,255,255,0.03),
-        0 4px 14px rgba(0,0,0,0.25);
-
-    transition: all .25s ease;
-}
-
-/* =============================== */
-/* HOVER */
-/* =============================== */
-
-md-outlined-text-field:hover {
-    transform: translateY(-1px);
-}
-
-/* =============================== */
-/* FOCUS */
-/* =============================== */
-
-md-outlined-text-field:focus-within {
-    transform: translateY(-1px);
-
-    box-shadow:
-        0 0 0 4px rgba(110,168,255,0.12),
-        0 10px 26px rgba(0,0,0,0.35);
-}
-
-/* =============================== */
-/* FIX: TEXTO NÃO FICA PRETO (IMPORTANTE) */
-/* =============================== */
-
-md-outlined-text-field::part(input) {
-    color: var(--text) !important;
-}
-
-md-outlined-text-field::part(input):focus {
-    color: var(--text) !important;
-}
-
-md-outlined-text-field::part(input)::placeholder {
-    color: rgba(232, 234, 246, 0.5);
-}
-
-/* =============================== */
-/* ERRO (CORRIGIDO) */
-/* =============================== */
-
-md-outlined-text-field.error-field {
-    --md-outlined-text-field-outline-color: var(--error);
-    --md-outlined-text-field-focus-outline-color: var(--error);
-}
-
-/* =============================== */
-/* TEXTO DE ERRO */
-/* =============================== */
-
-.field-error {
+    align-items: center;
+    gap: var(--sp-8);
+    color: #94a3b8;
     font-size: 0.78rem;
-    color: var(--error);
-
-    margin-left: 8px;
-
-    opacity: 0;
-    transform: translateY(-4px);
-
-    transition: all .25s ease;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s;
 }
 
-.field-error.show {
+.scroll-hint:hover { opacity: 0.7; }
+
+.scroll-arrow {
+    width: 28px;
+    height: 28px;
+    border: 1.5px solid rgba(110,168,255,0.35);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: bounce 1.8s ease-in-out infinite;
+}
+
+.scroll-arrow svg {
+    width: 14px;
+    height: 14px;
+    stroke: var(--primary);
+    fill: none;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(5px); }
+}
+
+
+/* =============================== */
+/* APP WRAPPER — aparece após hero */
+/* =============================== */
+#app-wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    opacity: 0;
+    transition: opacity 0.6s ease 0.2s;
+    pointer-events: none;
+}
+
+#app-wrapper.app-visible {
     opacity: 1;
+    pointer-events: auto;
+}
+
+#app-wrapper .login-area {
+    transform: translateY(30px);
+    transition: transform 0.7s ease 0.2s;
+}
+
+#app-wrapper.app-visible .login-area {
     transform: translateY(0);
 }
 
 
-
 /* =============================== */
-/* BODY */
-/* =============================== */
-body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-
-    /* Layout dividido (esquerda + direita) */
-    display: flex;
-    align-items: stretch;
-
-    overflow: hidden;
-}
-
-/* =============================== */
-/* FORM GROUP */
-/* =============================== */
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-bottom: 18px;
-}
-
-
-
-/* =============================== */
-/* PAINEL ESQUERDO (VISUAL) */
+/* PAINEL ESQUERDO                 */
 /* =============================== */
 .left-panel {
     flex: 1;
-
-    /* Imagem + overlay escuro */
-    background: 
-        linear-gradient(rgba(10,14,26,0.85), rgba(10,14,26,0.85)),
+    background:
+        linear-gradient(rgba(10,14,26,0.82), rgba(10,14,26,0.82)),
         url("compagnons-Fa9b57hffnM-unsplash (1).jpg");
-
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    padding: 60px;
-
+    padding: var(--sp-48) 60px;
     position: relative;
     overflow: hidden;
 }
 
-
-/* EFEITO DE LUZ (CANTO SUPERIOR) */
 .left-panel::before {
     content: '';
     position: absolute;
@@ -259,7 +258,6 @@ body {
     left: -100px;
 }
 
-/* EFEITO DE LUZ (CANTO INFERIOR) */
 .left-panel::after {
     content: '';
     position: absolute;
@@ -271,8 +269,6 @@ body {
     right: -80px;
 }
 
-
-/* GRID DECORATIVO */
 .grid-lines {
     position: absolute;
     inset: 0;
@@ -282,10 +278,6 @@ body {
     background-size: 40px 40px;
 }
 
-
-/* =============================== */
-/* MARCA / LOGO */
-/* =============================== */
 .brand {
     position: relative;
     z-index: 1;
@@ -296,21 +288,17 @@ body {
     font-size: 2rem;
     font-weight: 800;
     letter-spacing: -1px;
-    color: var(--primary); /* OBS: var(--primary) não foi definido */
-    margin-bottom: 8px;
+    color: var(--primary);
+    margin-bottom: var(--sp-8);
 }
 
 .brand-tagline {
-    font-size: 0.875rem;
+    font-size: var(--type-body-small);
     color: #94a3b8;
     letter-spacing: 2px;
     text-transform: uppercase;
 }
 
-
-/* =============================== */
-/* TEXTO DE DESTAQUE (ESQUERDA) */
-/* =============================== */
 .left-headline {
     position: relative;
     z-index: 1;
@@ -326,21 +314,17 @@ body {
 }
 
 .left-headline h1 span {
-    color: var(--primary); /* OBS: var(--primary) não definido */
+    color: var(--primary);
 }
 
 .left-headline p {
-    margin-top: 20px;
+    margin-top: var(--sp-24);
     color: #94a3b8;
-    font-size: 1rem;
+    font-size: var(--type-title-medium);
     line-height: 1.7;
     max-width: 380px;
 }
 
-
-/* =============================== */
-/* ESTATÍSTICAS */
-/* =============================== */
 .stats-row {
     position: relative;
     z-index: 1;
@@ -353,36 +337,43 @@ body {
     font-family: 'Syne', sans-serif;
     font-size: 1.75rem;
     font-weight: 700;
-    color: var(--primary); /* OBS: não definido */
+    color: var(--primary);
 }
 
 .stat-label {
-    font-size: 0.75rem;
+    font-size: var(--type-body-small);
     color: #94a3b8;
     text-transform: uppercase;
     letter-spacing: 1px;
+    margin-top: var(--sp-4);
 }
 
 
 /* =============================== */
-/* PAINEL DIREITO (LOGIN) */
+/* PAINEL DIREITO — Surface Tonal  */
 /* =============================== */
 .login-area {
     width: 480px;
     min-height: 100vh;
     background: var(--surface);
-
     display: flex;
     flex-direction: column;
-    justify-content: center;
-
-    padding: 60px 48px;
-    border-left: 1px solid var(--border);
-
+    justify-content: flex-start;   /* evita corte em painéis altos (cadastro) */
+    padding: var(--sp-48);
+    padding-top: 60px;
+    padding-bottom: 60px;
+    border-left: 1px solid rgba(110,168,255,0.1);
     position: relative;
+    overflow-y: auto;
 }
 
-/* LINHA DECORATIVA SUPERIOR */
+/* Centraliza verticalmente apenas quando o conteúdo cabe na tela */
+@media (min-height: 700px) {
+    .login-area {
+        justify-content: center;
+    }
+}
+
 .login-area::before {
     content: '';
     position: absolute;
@@ -390,331 +381,415 @@ body {
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(135deg, var(--bg) 0%, #172554 50%, var(--surface) 100%);
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(110,168,255,0.5) 40%,
+        rgba(124,58,237,0.5) 70%,
+        transparent 100%
+    );
 }
 
 
 /* =============================== */
-/* TEXTOS DO LOGIN */
+/* PAINÉIS MÚLTIPLOS               */
 /* =============================== */
-.login-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin-bottom: 6px;
-}
-
-.login-sub {
-    color: var(--muted);
-    font-size: 0.9rem;
-    margin-bottom: 40px;
-}
-
-
-/* =============================== */
-/* FORMULÁRIO */
-/* =============================== */
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-}
-
-/* INPUTS */
-.form-group input[type="text"],
-.form-group input[type="email"],
-.form-group input[type="password"] {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
-
-    padding: 14px 16px;
-    border-radius: 8px;
-
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-
-    transition: border-color 0.2s, box-shadow 0.2s;
-    outline: none;
-}
-
-/* FOCUS */
-.form-group input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(0,212,255,0.1);
-}
-
-/* ERRO NO INPUT */
-.form-group input.error-field {
-    border-color: var(--error);
-}
-
-/* TEXTO DE ERRO */
-.field-error {
-    color: var(--error);
-    font-size: 0.78rem;
-    margin-top: 5px;
-    display: none;
-}
-
-.field-error.show {
-    display: block;
-}
-
-
-/* =============================== */
-/* LEMBRAR SENHA */
-/* =============================== */
-.remember-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 28px;
-}
-
-.remember-row input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    accent-color: var(--accent);
-    cursor: pointer;
-}
-
-.remember-row label {
-    font-size: 0.875rem;
-    color: var(--muted);
-    cursor: pointer;
-}
-
-
-/* =============================== */
-/* BOTÃO LOGIN */
-/* =============================== */
-.btn-login {
-    width: 100%;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    color: var(--text);
-
-    border: none;
-    padding: 15px;
-    border-radius: 12px;
-
-    font-family: 'Syne', sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
-
-    cursor: pointer;
-    letter-spacing: 0.5px;
-
-    transition: opacity 0.2s, transform 0.1s;
-}
-
-.btn-login:hover {
-    opacity: 0.9;
-}
-
-.btn-login:active {
-    transform: scale(0.99);
-}
-
-
-/* =============================== */
-/* ALERTAS (ERRO / SUCESSO) */
-/* =============================== */
-.alert-msg {
-    padding: 12px 16px;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    margin-bottom: 20px;
-    display: none;
-}
-
-/* ERRO */
-.alert-msg.error {
-    background: rgba(255,77,109,0.12);
-    border: 1px solid rgba(255,77,109,0.3);
-    color: var(--error);
-    display: block;
-}
-
-/* SUCESSO */
-.alert-msg.success {
-    background: rgba(0,229,160,0.12);
-    border: 1px solid rgba(0,229,160,0.3);
-    color: var(--success);
-    display: block;
-}
-
-
-/* =============================== */
-/* RESPONSIVO */
-/* =============================== */
-@media (max-width: 900px) {
-
-    /* Esconde painel esquerdo */
-    .left-panel {
-        display: none;
-    }
-
-    /* Login ocupa toda a tela */
-    .login-area {
-        width: 100%;
-    }
-
-}
-
-/* =============================== */
-/* CORREÇÃO: --primary não definido */
-/* Usa --accent como substituto    */
-/* =============================== */
-.brand-logo,
-.left-headline h1 span,
-.stat-value {
-    color: var(--accent);
-}
-
-
-/* =============================== */
-/* CONTEÚDO ESQUERDO (TEXTOS)      */
-/* =============================== */
-.left-headline {
-    position: relative;
-    z-index: 1;
-    margin-top: 80px;
-}
-
-.left-headline h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: 3rem;
-    font-weight: 800;
-    line-height: 1.1;
-    color: var(--text);
-}
-
-.left-headline p {
-    margin-top: 20px;
-    color: #94a3b8;
-    font-size: 1rem;
-    line-height: 1.7;
-    max-width: 380px;
-}
-
-.stats-row {
-    position: relative;
-    z-index: 1;
-    margin-top: 60px;
-    display: flex;
-    gap: 40px;
-}
-
-.stat-value {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.75rem;
-    font-weight: 700;
-}
-
-.stat-label {
-    font-size: 0.75rem;
-    color: #94a3b8;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-
-/* =============================== */
-/* MÚLTIPLOS PAINÉIS (LOGIN/CADASTRO/RECUPERAR) */
-/* =============================== */
-
-/* Oculta painéis inativos */
 .login-panel {
     display: none;
     flex-direction: column;
     justify-content: center;
 }
 
-/* Painel ativo fica visível */
 .login-panel.active {
     display: flex;
 }
 
 
 /* =============================== */
-/* LINKS DE AÇÃO (CADASTRAR / VOLTAR) */
+/* TIPOGRAFIA M3                   */
+/* =============================== */
+
+/* Display Small → título */
+.login-title {
+    font-family: 'Syne', sans-serif;
+    font-size: var(--type-display-small);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: var(--sp-8);
+}
+
+/* Body Large → subtítulo */
+.login-sub {
+    font-size: var(--type-title-medium);
+    color: var(--muted);
+    margin-bottom: var(--sp-32);
+    line-height: 1.5;
+}
+
+
+/* =============================== */
+/* FORM GROUP — escala 4dp         */
+/* =============================== */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    margin-bottom: var(--sp-16);
+}
+
+
+/* =============================== */
+/* MD-OUTLINED-TEXT-FIELD          */
+/* 5 estados M3: enabled/hover/    */
+/* focus/error/disabled            */
+/* =============================== */
+md-outlined-text-field {
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    font-size: var(--type-body-medium);
+
+    /* Texto */
+    --md-outlined-text-field-input-text-color:       var(--text);
+    --md-outlined-text-field-focus-input-text-color: var(--text);
+
+    /* Label */
+    --md-outlined-text-field-label-text-color:       var(--muted);
+    --md-outlined-text-field-hover-label-text-color: var(--text);
+    --md-outlined-text-field-focus-label-text-color: var(--primary);
+    --md-outlined-text-field-caret-color:            var(--primary);
+
+    /* Borda — enabled / hover / focus */
+    --md-outlined-text-field-outline-color:          rgba(110,168,255,0.22);
+    --md-outlined-text-field-hover-outline-color:    rgba(110,168,255,0.5);
+    --md-outlined-text-field-focus-outline-color:    var(--primary);
+    --md-outlined-text-field-focus-outline-width:    2px;
+
+    /* Erro */
+    --md-outlined-text-field-error-outline-color:          var(--error);
+    --md-outlined-text-field-error-hover-outline-color:    var(--error);
+    --md-outlined-text-field-error-focus-outline-color:    var(--error);
+    --md-outlined-text-field-error-label-text-color:       var(--error);
+    --md-outlined-text-field-error-focus-label-text-color: var(--error);
+    --md-outlined-text-field-error-caret-color:            var(--error);
+
+    /* Disabled — M3: 38% opacidade */
+    --md-outlined-text-field-disabled-input-text-color: rgba(232,234,246,0.38);
+    --md-outlined-text-field-disabled-outline-color:    rgba(110,168,255,0.12);
+    --md-outlined-text-field-disabled-label-text-color: rgba(143,163,191,0.38);
+
+    /* Container */
+    --md-outlined-text-field-container-color:   transparent;
+    --md-outlined-text-field-container-shape:   12px;
+    --md-outlined-text-field-container-height:  56px;
+
+    /* Supporting text */
+    --md-outlined-text-field-supporting-text-color:       var(--muted);
+    --md-outlined-text-field-error-supporting-text-color: var(--error);
+
+    border-radius: 12px;
+    background:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(135deg, #0f172a, #16233d);
+    background-size: 18px 18px;
+    transition: all 0.2s ease;
+}
+
+md-outlined-text-field:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+md-outlined-text-field:focus-within {
+    transform: translateY(-1px);
+    box-shadow:
+        0 0 0 4px rgba(110,168,255,0.1),
+        0 8px 24px rgba(0,0,0,0.3);
+}
+
+/* Disabled */
+md-outlined-text-field[disabled] {
+    opacity: 0.38;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Fix: texto não fica preto no focus (Chromium) */
+md-outlined-text-field::part(input) {
+    color: var(--text) !important;
+    font-family: 'DM Sans', sans-serif;
+}
+
+md-outlined-text-field::part(input):focus {
+    color: var(--text) !important;
+}
+
+md-outlined-text-field::part(input)::placeholder {
+    color: rgba(232,234,246,0.4);
+}
+
+/* Estado erro via classe JS */
+md-outlined-text-field.error-field {
+    --md-outlined-text-field-outline-color:       var(--error);
+    --md-outlined-text-field-hover-outline-color: var(--error);
+}
+
+
+/* =============================== */
+/* SUPPORTING TEXT — M3            */
+/* 16px alinhado ao texto do campo */
+/* =============================== */
+.field-error {
+    font-size: var(--type-body-small);
+    color: var(--error);
+    padding-left: var(--sp-16);
+    line-height: 1.4;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+}
+
+.field-error.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+/* =============================== */
+/* LINHA LEMBRAR / ESQUECI         */
+/* =============================== */
+.remember-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-12);
+    margin-bottom: var(--sp-24);
+    flex-wrap: nowrap;
+}
+
+.remember-row label {
+    font-size: var(--type-body-medium);
+    color: var(--muted);
+    cursor: pointer;
+    user-select: none;
+}
+
+/* MD-CHECKBOX — todos os tokens para cor azul             */
+/* O componente usa --md-sys-color-primary internamente,   */
+/* sobrescrever só --md-checkbox-* não é suficiente        */
+md-checkbox {
+    /* Borda não selecionado */
+    --md-checkbox-outline-color:                       rgba(110,168,255,0.45);
+    --md-checkbox-hover-outline-color:                 #6ea8ff;
+    --md-checkbox-focus-outline-color:                 #6ea8ff;
+    --md-checkbox-pressed-outline-color:               #6ea8ff;
+
+    /* Selecionado — fundo */
+    --md-checkbox-selected-container-color:            #6ea8ff;
+    --md-checkbox-selected-hover-container-color:      #90bcff;
+    --md-checkbox-selected-focus-container-color:      #6ea8ff;
+    --md-checkbox-selected-pressed-container-color:    #4d8fe0;
+
+    /* Selecionado — ícone do check */
+    --md-checkbox-selected-icon-color:                 #001e45;
+    --md-checkbox-selected-hover-icon-color:           #001e45;
+    --md-checkbox-selected-focus-icon-color:           #001e45;
+    --md-checkbox-selected-pressed-icon-color:         #001e45;
+
+    /* State layer (ripple) */
+    --md-checkbox-hover-state-layer-color:             #6ea8ff;
+    --md-checkbox-focus-state-layer-color:             #6ea8ff;
+    --md-checkbox-pressed-state-layer-color:           #6ea8ff;
+    --md-checkbox-selected-hover-state-layer-color:    #6ea8ff;
+    --md-checkbox-selected-focus-state-layer-color:    #6ea8ff;
+    --md-checkbox-selected-pressed-state-layer-color:  #6ea8ff;
+
+    /* Token de sistema — fonte interna do M3 para cor primary */
+    --md-sys-color-primary:                            #6ea8ff;
+    --md-sys-color-on-primary:                         #001e45;
+
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+/* Fallback nativo (caso md-checkbox não carregue) */
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #6ea8ff;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+
+/* =============================== */
+/* LINK "ESQUECI A SENHA"          */
+/* State Layer M3                  */
+/* =============================== */
+.link-recuperar {
+    margin-left: auto;
+    color: var(--primary);
+    font-size: var(--type-body-medium);
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    padding: var(--sp-4) var(--sp-8);
+    border-radius: var(--sp-4);
+    transition: background 0.2s ease;
+}
+
+.link-recuperar:hover {
+    background: var(--primary-hover);
+}
+
+.link-recuperar:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+
+/* =============================== */
+/* BOTÃO — M3 FilledButton         */
+/* Pill shape (border-radius 20px) */
+/* =============================== */
+.btn-login {
+    width: 100%;
+    background: var(--primary);
+    color: var(--on-primary);
+    border: none;
+    padding: 0 var(--sp-24);
+    height: 48px;
+    border-radius: 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: var(--type-label-large);
+    font-weight: 600;
+    letter-spacing: 0.1px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease, transform 0.1s ease;
+    margin-bottom: var(--sp-4);
+}
+
+/* State Layer M3 */
+.btn-login::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0);
+    transition: background 0.2s ease;
+    border-radius: inherit;
+}
+
+.btn-login:hover::after  { background: rgba(0,0,0,0.08); }
+.btn-login:active::after { background: rgba(0,0,0,0.12); }
+
+.btn-login:hover {
+    box-shadow:
+        0 1px 2px rgba(0,0,0,0.3),
+        0 2px 6px rgba(110,168,255,0.2);
+}
+
+.btn-login:active { transform: scale(0.99); }
+
+.btn-login:focus-visible {
+    outline: 3px solid rgba(110,168,255,0.5);
+    outline-offset: 2px;
+}
+
+.btn-login.loading {
+    opacity: 0.8;
+    cursor: wait;
+    pointer-events: none;
+}
+
+
+/* =============================== */
+/* ALERTAS — M3 com borda lateral  */
+/* =============================== */
+.alert-msg {
+    padding: var(--sp-12) var(--sp-16);
+    border-radius: 12px;
+    font-size: var(--type-body-medium);
+    margin-bottom: var(--sp-16);
+    display: none;
+    line-height: 1.5;
+    border-left: 3px solid transparent;
+}
+
+.alert-msg.error {
+    background: var(--error-container);
+    border-left-color: var(--error);
+    color: var(--error);
+    display: block;
+}
+
+.alert-msg.success {
+    background: rgba(0,229,160,0.1);
+    border-left-color: var(--success);
+    color: var(--success);
+    display: block;
+}
+
+
+/* =============================== */
+/* FOOTER LINKS — State Layer M3   */
 /* =============================== */
 .login-footer-links {
     text-align: center;
-    margin-top: 20px;
-    font-size: 0.875rem;
+    margin-top: var(--sp-16);
+    font-size: var(--type-body-medium);
     color: var(--muted);
 }
 
 .link-acao {
-    color: var(--accent);
+    color: var(--primary);
     text-decoration: none;
     font-weight: 500;
-    margin-left: 4px;
-    transition: opacity 0.2s;
+    margin-left: var(--sp-4);
+    padding: var(--sp-4) var(--sp-8);
+    border-radius: var(--sp-4);
+    transition: background 0.2s ease;
 }
 
 .link-acao:hover {
-    opacity: 0.8;
-    text-decoration: underline;
+    background: var(--primary-hover);
 }
 
-/* Link de recuperar senha (na linha do lembrar-me) */
-.link-recuperar {
-    margin-left: auto;
-    color: var(--accent);
-    font-size: 0.8rem;
-    text-decoration: none;
-    white-space: nowrap;
-    transition: opacity 0.2s;
-}
-
-.link-recuperar:hover {
-    opacity: 0.8;
-    text-decoration: underline;
-}
-
-/* Linha lembrar: flex para empurrar link para direita */
-.remember-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 28px;
-    flex-wrap: nowrap;
+.link-acao:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
 }
 
 
 /* =============================== */
-/* SOBRE O SISTEMA (DETAILS/SUMMARY) */
+/* SOBRE O SISTEMA                 */
 /* =============================== */
 .sobre-sistema {
-    margin-top: 28px;
-    border-top: 1px solid var(--border);
-    padding-top: 16px;
+    margin-top: var(--sp-24);
+    border-top: 1px solid rgba(110,168,255,0.1);
+    padding-top: var(--sp-16);
 }
 
 .sobre-sistema details summary {
-    font-size: 0.8rem;
+    font-size: var(--type-body-small);
     color: var(--muted);
     cursor: pointer;
     user-select: none;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
     list-style: none;
+    padding: var(--sp-4) var(--sp-8);
+    border-radius: var(--sp-4);
+    transition: background 0.2s ease;
+}
+
+.sobre-sistema details summary:hover {
+    background: var(--primary-hover);
 }
 
 .sobre-sistema details summary::before {
     content: '▸ ';
-    color: var(--accent);
+    color: var(--primary);
 }
 
 .sobre-sistema details[open] summary::before {
@@ -722,15 +797,27 @@ body {
 }
 
 .sobre-sistema details p {
-    margin-top: 10px;
-    font-size: 0.82rem;
+    margin-top: var(--sp-8);
+    font-size: var(--type-body-small);
     color: #94a3b8;
     line-height: 1.6;
+    padding-left: var(--sp-16);
 }
 
+
 /* =============================== */
-/* SCROLL NO PAINEL DE LOGIN (MOBILE) */
+/* RESPONSIVO                      */
 /* =============================== */
-.login-area {
-    overflow-y: auto;
+@media (max-width: 900px) {
+    .left-panel { display: none; }
+
+    .login-area {
+        width: 100%;
+        padding: var(--sp-48) var(--sp-32);
+    }
+}
+
+@media (max-width: 480px) {
+    .login-area   { padding: var(--sp-32) var(--sp-24); }
+    .login-title  { font-size: 1.75rem; }
 }

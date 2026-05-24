@@ -21,7 +21,6 @@
             autocomplete="username"
             required>
         </md-outlined-text-field>
-
         <div class="field-error" id="erroUsuario">
             Por favor, informe seu usuário.
         </div>
@@ -34,19 +33,17 @@
             type="password"
             label="Senha"
             autocomplete="current-password"
-            required
-            aria-describedby="erroSenha">
+            required>
         </md-outlined-text-field>
-
         <div class="field-error" id="erroSenha">
             Por favor, informe sua senha.
         </div>
     </div>
 
+    <!-- LEMBRAR / ESQUECI — md-checkbox M3 -->
     <div class="remember-row">
-        <input type="checkbox" id="lembrarSenha">
+        <md-checkbox id="lembrarSenha" touch-target="wrapper"></md-checkbox>
         <label for="lembrarSenha">Lembrar senha</label>
-
         <a href="#" class="link-recuperar" id="linkRecuperar">
             Esqueci a senha
         </a>
@@ -94,7 +91,6 @@
             autocomplete="name"
             required>
         </md-outlined-text-field>
-
         <div class="field-error" id="erroCadNome">
             Por favor, informe seu nome.
         </div>
@@ -108,7 +104,6 @@
             autocomplete="username"
             required>
         </md-outlined-text-field>
-
         <div class="field-error" id="erroCadUsuario">
             Informe um nome de usuário.
         </div>
@@ -123,7 +118,6 @@
             autocomplete="email"
             required>
         </md-outlined-text-field>
-
         <div class="field-error" id="erroCadEmail">
             Informe um e-mail válido.
         </div>
@@ -138,7 +132,6 @@
             autocomplete="new-password"
             required>
         </md-outlined-text-field>
-
         <div class="field-error" id="erroCadSenha">
             A senha precisa ter ao menos 6 caracteres.
         </div>
@@ -153,7 +146,6 @@
             autocomplete="new-password"
             required>
         </md-outlined-text-field>
-
         <div class="field-error" id="erroCadConfSenha">
             As senhas não coincidem.
         </div>
@@ -192,7 +184,6 @@
             autocomplete="email"
             required>
         </md-outlined-text-field>
-
         <div class="field-error" id="erroRecEmail">
             Informe um e-mail válido.
         </div>
