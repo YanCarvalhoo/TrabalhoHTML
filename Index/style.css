@@ -17,7 +17,6 @@
     --surface2: #161f30;
     --border: #1e2d40;
 
-    /* CORES PRINCIPAIS */
     --accent: #2563eb;
     --accent2: #1d4ed8;
 
@@ -28,6 +27,12 @@
     --warning: #fbbf24;
 
     --nav-h: 64px;
+
+    /* UX: sombras e transições padrão */
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 20px rgba(0,0,0,0.4);
+    --shadow-focus: 0 0 0 3px rgba(37,99,235,0.35);
+    --transition: 0.2s ease;
 }
 
 
@@ -39,6 +44,7 @@ body {
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
+    line-height: 1.6; /* UX: leitura mais confortável */
 }
 
 
@@ -52,6 +58,8 @@ header {
     position: sticky;
     top: 0;
     z-index: 100;
+    /* UX: sombra sutil indica que o header está "acima" do conteúdo */
+    box-shadow: var(--shadow-sm);
 }
 
 nav {
@@ -76,10 +84,23 @@ nav {
     text-decoration: none;
     letter-spacing: -0.5px;
     cursor: pointer;
+    /* UX: foco visível para navegação por teclado */
+    border-radius: 4px;
+    outline: none;
+    transition: opacity var(--transition);
 }
 
 .logo a::before {
     content: '⬡ ';
+}
+
+.logo a:hover {
+    opacity: 0.85;
+}
+
+/* UX: foco acessível */
+.logo a:focus-visible {
+    box-shadow: var(--shadow-focus);
 }
 
 
@@ -99,11 +120,20 @@ nav ul li a {
     padding: 8px 14px;
     border-radius: 6px;
 
-    transition: 0.2s;
+    transition: color var(--transition), background var(--transition);
     display: block;
+    outline: none;
+    /* UX: área de clique confortável */
+    min-height: 36px;
+    display: flex;
+    align-items: center;
 }
 
-/* HOVER + ACTIVE */
+/* UX: foco visível para acessibilidade por teclado */
+nav ul li a:focus-visible {
+    box-shadow: var(--shadow-focus);
+}
+
 nav ul li a:hover,
 nav ul li a.active {
     color: var(--text);
@@ -112,6 +142,9 @@ nav ul li a.active {
 
 nav ul li a.active {
     color: var(--accent);
+    /* UX: indicador visual claro de página atual */
+    background: rgba(37,99,235,0.1);
+    font-weight: 600;
 }
 
 
@@ -138,6 +171,8 @@ main {
     max-width: 1200px;
     margin: 0 auto;
     padding: 40px 24px;
+    /* UX: padding bottom generoso para não cortar conteúdo antes do footer */
+    padding-bottom: 64px;
 }
 
 
@@ -150,6 +185,13 @@ main {
 
 .screen.active {
     display: block;
+    /* UX: entrada suave ao trocar de tela */
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 
@@ -175,6 +217,8 @@ main {
     color: var(--muted);
     margin-top: 12px;
     line-height: 1.7;
+    /* UX: linha não muito larga para leitura confortável */
+    max-width: 480px;
 }
 
 
@@ -193,12 +237,29 @@ main {
     padding: 28px;
 
     cursor: pointer;
-    transition: 0.2s;
+    transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+
+    /* UX: acessibilidade por teclado */
+    outline: none;
+}
+
+/* UX: foco visível para navegação por teclado */
+.home-card:focus-visible {
+    box-shadow: var(--shadow-focus);
+    border-color: var(--accent);
 }
 
 .home-card:hover {
     border-color: var(--accent);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    /* UX: sombra reforça a elevação no hover */
+    box-shadow: var(--shadow-md);
+}
+
+/* UX: feedback de clique */
+.home-card:active {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
 }
 
 .home-card-icon {
@@ -215,6 +276,7 @@ main {
 .home-card p {
     font-size: 0.825rem;
     color: var(--muted);
+    line-height: 1.6;
 }
 
 
@@ -224,6 +286,7 @@ main {
 .page-header {
     display: flex;
     justify-content: space-between;
+    align-items: center; /* UX: alinhamento vertical correto */
     margin-bottom: 28px;
     flex-wrap: wrap;
     gap: 16px;
@@ -239,26 +302,44 @@ main {
     display: block;
     font-size: 0.8rem;
     color: var(--muted);
+    font-weight: 400; /* UX: hierarquia clara entre título e subtítulo */
+    margin-top: 4px;
 }
 
 
-/* BOTÃO */
+/* BOTÃO PRIMÁRIO */
 .btn-primary {
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     color: #fff;
     border: none;
 
+    /* UX: altura mínima de 44px (recomendação de toque) */
+    min-height: 44px;
     padding: 11px 20px;
     border-radius: 8px;
 
     font-family: 'Syne', sans-serif;
     font-weight: 600;
+    font-size: 0.875rem;
 
     cursor: pointer;
+    transition: opacity var(--transition), transform var(--transition), box-shadow var(--transition);
+    outline: none;
 }
 
 .btn-primary:hover {
     opacity: 0.9;
+    box-shadow: 0 4px 14px rgba(37,99,235,0.4);
+}
+
+/* UX: feedback de clique */
+.btn-primary:active {
+    transform: scale(0.98);
+    opacity: 1;
+}
+
+.btn-primary:focus-visible {
+    box-shadow: var(--shadow-focus);
 }
 
 
@@ -270,13 +351,17 @@ main {
     border: 1px solid var(--border);
     border-radius: 12px;
     margin-bottom: 24px;
+    /* UX: entrada suave do formulário */
+    animation: fadeIn 0.2s ease;
 }
 
 .card-criar-header {
     padding: 18px 24px;
     border-bottom: 1px solid var(--border);
     font-family: 'Syne', sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
 }
 
 .card-criar-body {
@@ -284,45 +369,122 @@ main {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr auto auto;
     gap: 16px;
-    align-items: end;
+    align-items: end; /* UX: alinha botões com a base dos inputs */
 }
 
 
-/* INPUT */
+/* INPUT GROUP */
 .input-group {
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
 
+/* UX: label sempre visível (não some como placeholder) */
+.input-group label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+    /* UX: cursor pointer indica interatividade */
+    cursor: pointer;
+    transition: color var(--transition);
+}
+
+/* UX: label muda de cor junto com o foco no input */
+.input-group:focus-within label {
+    color: var(--accent);
+}
+
 .input-group input {
     background: var(--bg);
     border: 1px solid var(--border);
     color: var(--text);
-    padding: 11px;
+    /* UX: altura mínima confortável */
+    min-height: 44px;
+    padding: 11px 14px;
     border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+/* UX: placeholder mais suave para não competir com o conteúdo */
+.input-group input::placeholder {
+    color: #3a4a60;
+}
+
+.input-group input:hover {
+    border-color: #2d3f55;
 }
 
 .input-group input:focus {
     border-color: var(--accent);
+    /* UX: ring de foco visível e acessível */
+    box-shadow: var(--shadow-focus);
 }
 
 
-/* BOTÕES */
+/* BOTÕES DO FORMULÁRIO */
 .btn-salvar {
     background: var(--accent);
+    color: #fff;
     border: none;
-    padding: 11px;
+    /* UX: altura mínima 44px */
+    min-height: 44px;
+    padding: 11px 20px;
     border-radius: 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.875rem;
     cursor: pointer;
+    transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+    outline: none;
+    white-space: nowrap;
+}
+
+.btn-salvar:hover {
+    background: var(--accent2);
+    box-shadow: 0 4px 14px rgba(37,99,235,0.35);
+}
+
+.btn-salvar:active {
+    transform: scale(0.97);
+}
+
+.btn-salvar:focus-visible {
+    box-shadow: var(--shadow-focus);
 }
 
 .btn-cancelar {
     background: transparent;
+    color: var(--muted);
     border: 1px solid var(--border);
-    padding: 11px;
+    /* UX: altura mínima 44px */
+    min-height: 44px;
+    padding: 11px 16px;
     border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
     cursor: pointer;
+    transition: color var(--transition), border-color var(--transition), background var(--transition);
+    outline: none;
+    white-space: nowrap;
+}
+
+.btn-cancelar:hover {
+    color: var(--text);
+    border-color: var(--muted);
+    background: rgba(255,255,255,0.04);
+}
+
+.btn-cancelar:active {
+    transform: scale(0.97);
+}
+
+.btn-cancelar:focus-visible {
+    box-shadow: var(--shadow-focus);
 }
 
 
@@ -333,6 +495,7 @@ main {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
+    overflow: hidden; /* UX: garante que border-radius funcione na tabela */
 }
 
 .table-wrap table {
@@ -340,102 +503,43 @@ main {
     border-collapse: collapse;
 }
 
-.table-wrap th,
-.table-wrap td {
-    padding: 14px;
+.table-wrap th {
+    padding: 14px 16px;
     border-bottom: 1px solid var(--border);
+    text-align: left;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    background: var(--surface2);
 }
 
-.table-wrap thead {
-    background: var(--surface2);
+.table-wrap td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    vertical-align: middle;
+}
+
+/* UX: última linha sem borda */
+.table-wrap tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* UX: hover nas linhas para facilitar leitura */
+.table-wrap tbody tr {
+    transition: background var(--transition);
+}
+
+.table-wrap tbody tr:hover {
+    background: rgba(255,255,255,0.03);
 }
 
 
 /* =============================== */
 /* TOAST */
-/* =============================== */
-.toast-container {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-}
-
-
-/* =============================== */
-/* MODAL */
-/* =============================== */
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-box {
-    background: var(--surface);
-    padding: 32px;
-    border-radius: 12px;
-}
-
-
-/* =============================== */
-/* RESPONSIVO */
-/* =============================== */
-@media (max-width: 700px) {
-    .card-criar-body {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* =============================== */
-/* BOTÕES DA TABELA (EDITAR/EXCLUIR) */
-/* =============================== */
-.td-acoes {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.btn-editar,
-.btn-excluir {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.1s;
-    white-space: nowrap;
-}
-
-.btn-editar {
-    background: rgba(0,212,255,0.12);
-    color: #00d4ff;
-    border: 1px solid rgba(0,212,255,0.3);
-}
-
-.btn-excluir {
-    background: rgba(255,77,109,0.12);
-    color: #ff4d6d;
-    border: 1px solid rgba(255,77,109,0.3);
-}
-
-.btn-editar:hover,
-.btn-excluir:hover {
-    opacity: 0.8;
-}
-
-.btn-editar:active,
-.btn-excluir:active {
-    transform: scale(0.97);
-}
-
-
-/* =============================== */
-/* TOAST (NOTIFICAÇÕES FLUTUANTES) */
 /* =============================== */
 .toast-container {
     position: fixed;
@@ -448,23 +552,26 @@ main {
 }
 
 .toast {
-    padding: 12px 20px;
+    padding: 14px 20px;
     border-radius: 8px;
     font-size: 0.875rem;
     font-family: 'DM Sans', sans-serif;
     max-width: 320px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    /* UX: sombra para "flutuar" sobre o conteúdo */
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
 
-    /* Começa invisível / deslocado */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
     opacity: 0;
-    transform: translateY(12px);
-    transition: opacity 0.3s, transform 0.3s;
+    transform: translateX(12px); /* UX: entra da direita */
+    transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
-/* Estado visível */
 .toast.show {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(0);
 }
 
 .toast-success {
@@ -487,41 +594,234 @@ main {
 
 
 /* =============================== */
-/* ERROS DE CAMPO (INDEX) */
+/* ERROS DE CAMPO */
 /* =============================== */
 .field-error {
-    color: #ff4d6d;
+    color: var(--error);
     font-size: 0.78rem;
-    margin-top: 5px;
+    margin-top: 4px;
     display: none;
+    /* UX: ícone de aviso junto à mensagem */
+}
+
+.field-error::before {
+    content: '⚠ ';
 }
 
 .field-error.show {
     display: block;
+    /* UX: animação sutil de entrada */
+    animation: fadeIn 0.15s ease;
 }
 
 input.error-field {
-    border-color: #ff4d6d !important;
+    border-color: var(--error) !important;
+    box-shadow: 0 0 0 3px rgba(255,77,109,0.2);
 }
 
 
 /* =============================== */
-/* MODAL — OVERLAY FLEXBOX */
+/* MODAL */
 /* =============================== */
 .modal-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.65);
     z-index: 1000;
-    /* Centraliza o modal-box */
     align-items: center;
     justify-content: center;
+    /* UX: backdrop com blur sutil */
+    backdrop-filter: blur(2px);
 }
 
-/* Quando aberto via JS, trocamos display:none por display:flex */
 .modal-overlay[style*="flex"] {
     display: flex !important;
+}
+
+.modal-box {
+    background: var(--surface);
+    padding: 32px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    /* UX: largura controlada para não ficar muito largo */
+    max-width: 420px;
+    width: 90%;
+    box-shadow: var(--shadow-md);
+    /* UX: entrada suave */
+    animation: modalIn 0.2s ease;
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(0.96) translateY(8px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-box h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.modal-box p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.modal-box p strong {
+    color: var(--text);
+}
+
+/* UX: botões do modal com espaçamento e hierarquia claros */
+.modal-btns {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.btn-cancel-del {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 10px 18px;
+    min-height: 44px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: color var(--transition), border-color var(--transition);
+    outline: none;
+}
+
+.btn-cancel-del:hover {
+    color: var(--text);
+    border-color: var(--muted);
+}
+
+.btn-cancel-del:focus-visible {
+    box-shadow: var(--shadow-focus);
+}
+
+.btn-confirm-del {
+    background: rgba(255,77,109,0.15);
+    color: var(--error);
+    border: 1px solid rgba(255,77,109,0.4);
+    padding: 10px 18px;
+    min-height: 44px;
+    border-radius: 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background var(--transition), box-shadow var(--transition);
+    outline: none;
+}
+
+.btn-confirm-del:hover {
+    background: rgba(255,77,109,0.25);
+    box-shadow: 0 0 0 3px rgba(255,77,109,0.2);
+}
+
+.btn-confirm-del:focus-visible {
+    box-shadow: 0 0 0 3px rgba(255,77,109,0.35);
+}
+
+
+/* =============================== */
+/* BOTÕES DA TABELA (EDITAR/EXCLUIR) */
+/* =============================== */
+.td-acoes {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn-editar,
+.btn-excluir {
+    /* UX: área de toque mínima */
+    min-height: 36px;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: opacity var(--transition), transform var(--transition), box-shadow var(--transition);
+    white-space: nowrap;
+    outline: none;
+}
+
+.btn-editar {
+    background: rgba(0,212,255,0.12);
+    color: #00d4ff;
+    border: 1px solid rgba(0,212,255,0.3);
+}
+
+.btn-excluir {
+    background: rgba(255,77,109,0.12);
+    color: #ff4d6d;
+    border: 1px solid rgba(255,77,109,0.3);
+}
+
+.btn-editar:hover {
+    opacity: 0.85;
+    box-shadow: 0 0 0 2px rgba(0,212,255,0.2);
+}
+
+.btn-excluir:hover {
+    opacity: 0.85;
+    box-shadow: 0 0 0 2px rgba(255,77,109,0.2);
+}
+
+.btn-editar:active,
+.btn-excluir:active {
+    transform: scale(0.96);
+}
+
+.btn-editar:focus-visible {
+    box-shadow: 0 0 0 3px rgba(0,212,255,0.35);
+}
+
+.btn-excluir:focus-visible {
+    box-shadow: 0 0 0 3px rgba(255,77,109,0.35);
+}
+
+
+/* =============================== */
+/* NAV-USER: AVATAR + SAIR */
+/* =============================== */
+.nav-avatar {
+    font-size: 1.1rem;
+    margin-right: 4px;
+}
+
+.btn-sair {
+    margin-left: 12px;
+    /* UX: área de toque mínima */
+    min-height: 32px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    background: rgba(255,77,109,0.12);
+    color: #ff4d6d;
+    border: 1px solid rgba(255,77,109,0.3);
+    font-size: 0.78rem;
+    text-decoration: none;
+    transition: opacity var(--transition), background var(--transition);
+    display: inline-flex;
+    align-items: center;
+    outline: none;
+}
+
+.btn-sair:hover {
+    opacity: 0.85;
+    background: rgba(255,77,109,0.2);
+}
+
+.btn-sair:focus-visible {
+    box-shadow: 0 0 0 3px rgba(255,77,109,0.35);
 }
 
 
@@ -531,7 +831,7 @@ input.error-field {
 @media (max-width: 640px) {
 
     table thead {
-        display: none; /* esconde cabeçalho */
+        display: none;
     }
 
     table tr {
@@ -546,7 +846,7 @@ input.error-field {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 6px 4px;
+        padding: 8px 4px;
         border: none;
         font-size: 0.9rem;
     }
@@ -554,7 +854,7 @@ input.error-field {
     table td::before {
         content: attr(data-label);
         font-weight: 600;
-        color: var(--muted, #6b7a99);
+        color: var(--muted);
         font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 1px;
@@ -565,27 +865,17 @@ input.error-field {
     }
 }
 
-
 /* =============================== */
-/* NAV-USER: AVATAR + SAIR         */
+/* RESPONSIVO — FORMULÁRIO */
 /* =============================== */
-.nav-avatar {
-    font-size: 1.1rem;
-    margin-right: 4px;
-}
+@media (max-width: 700px) {
+    .card-criar-body {
+        grid-template-columns: 1fr;
+    }
 
-.btn-sair {
-    margin-left: 12px;
-    padding: 4px 10px;
-    border-radius: 6px;
-    background: rgba(255,77,109,0.12);
-    color: #ff4d6d;
-    border: 1px solid rgba(255,77,109,0.3);
-    font-size: 0.78rem;
-    text-decoration: none;
-    transition: opacity 0.2s;
-}
-
-.btn-sair:hover {
-    opacity: 0.8;
+    .btn-salvar,
+    .btn-cancelar {
+        width: 100%;
+        justify-content: center;
+    }
 }
