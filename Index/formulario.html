@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulário de Produto</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div style="max-width: 500px; margin: 50px auto; padding: 24px; background: var(--surface); border-radius: 16px;">
+    <h2>Cadastrar Novo Produto</h2>
+    
+    <input type="text" id="nome" placeholder="Nome do produto" style="width:100%; padding:10px; margin:10px 0;">
+    <input type="number" id="preco" placeholder="Preço" style="width:100%; padding:10px; margin:10px 0;">
+    <input type="number" id="estoque" placeholder="Estoque" style="width:100%; padding:10px; margin:10px 0;">
+    
+    <button onclick="salvarProdutoExterno()" style="background: var(--accent); color:white; padding:10px 20px; border:none; border-radius:8px;">Salvar</button>
+  </div>
+
+  <script>
+    function salvarProdutoExterno() {
+      const nome = document.getElementById('nome').value;
+      const preco = parseFloat(document.getElementById('preco').value);
+      const estoque = parseInt(document.getElementById('estoque').value);
+      
+      if(!nome || isNaN(preco) || isNaN(estoque)) {
+        alert('Preencha todos os campos');
+        return;
+      }
+      
+      let produtos = JSON.parse(localStorage.getItem('sysprod_produtos')) || [];
+      produtos.push({ id: Date.now(), nome, preco, estoque });
+      localStorage.setItem('sysprod_produtos', JSON.stringify(produtos));
+      
+      alert('Produto salvo!');
+      window.location.href = '../Index/index.html';
+    }
+  </script>
+</body>
+</html>

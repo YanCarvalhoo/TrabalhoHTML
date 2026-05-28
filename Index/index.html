@@ -1,131 +1,1003 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Product | Material Design 2</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ======================================== */
+        /* RESET E VARIÁVEIS (Material Design 2)    */
+        /* ======================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <!-- =============================== -->
-    <!-- CONFIGURAÇÕES BÁSICAS -->
-    <!-- =============================== -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Produtos | System Product</title>
+        :root {
+            /* Cores primárias */
+            --md-primary: #6ea8ff;
+            --md-primary-dark: #3b82f6;
+            --md-primary-light: #bfdbfe;
+            --md-on-primary: #0a0e1a;
+            --md-secondary: #a78bfa;
+            --md-surface: #111827;
+            --md-surface-variant: #1f2937;
+            --md-background: #0a0e1a;
+            --md-error: #ff4d6d;
+            --md-success: #00e5a0;
+            
+            /* Texto */
+            --md-text-primary: #f3f4f6;
+            --md-text-secondary: #9ca3af;
+            --md-text-disabled: #6b7280;
+            
+            /* Bordas */
+            --md-border: #1e2d40;
+            --md-divider: #374151;
+            
+            /* Sombras (elevação) */
+            --md-elevation-1: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+            --md-elevation-2: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+            --md-elevation-3: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+            --md-elevation-4: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            
+            /* Espaçamento */
+            --md-spacing-1: 4px;
+            --md-spacing-2: 8px;
+            --md-spacing-3: 12px;
+            --md-spacing-4: 16px;
+            --md-spacing-6: 24px;
+            --md-spacing-8: 32px;
+            --md-spacing-12: 48px;
+            
+            /* Bordas */
+            --md-radius-small: 4px;
+            --md-radius-medium: 8px;
+            --md-radius-large: 12px;
+            --md-radius-xl: 16px;
+            
+            /* Transições */
+            --md-transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    <!-- RESPONSIVIDADE -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--md-background);
+            color: var(--md-text-primary);
+            line-height: 1.5;
+        }
 
+        /* Container principal */
+        .md-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--md-spacing-6);
+        }
 
-    <!-- =============================== -->
-    <!-- FONTES (GOOGLE FONTS) -->
-    <!-- =============================== -->
-    <!-- Syne = títulos | DM Sans = textos -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+        /* ======================================== */
+        /* HEADER (Material App Bar)                */
+        /* ======================================== */
+        .md-top-app-bar {
+            background: var(--md-surface);
+            border-bottom: 1px solid var(--md-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
+        .md-top-app-bar__row {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--md-spacing-4) var(--md-spacing-6);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-    <!-- =============================== -->
-    <!-- CSS PRINCIPAL -->
-    <!-- =============================== -->
-    <link rel="stylesheet" href="style.css">
+        .md-logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--md-primary), var(--md-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
 
+        .md-badge {
+            background: rgba(110,168,255,0.15);
+            color: var(--md-primary);
+            padding: var(--md-spacing-1) var(--md-spacing-3);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
 
-    <!-- =============================== -->
-    <!-- ÍCONES (PWA / FAVICON) -->
-    <!-- =============================== -->
+        /* ======================================== */
+        /* TÍTULOS (Material Typography)            */
+        /* ======================================== */
+        .md-headline-large {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: var(--md-spacing-2);
+        }
 
-    <!-- Apple -->
-    <link rel="apple-touch-icon" sizes="57x57" href="favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="favicon/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-icon-180x180.png">
+        .md-headline-medium {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: var(--md-spacing-4);
+        }
 
-    <!-- Android -->
-    <link rel="icon" type="image/png" sizes="192x192" href="favicon/android-icon-192x192.png">
+        .md-title-large {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--md-spacing-2);
+        }
 
-    <!-- Navegador -->
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+        .md-body-medium {
+            font-size: 0.875rem;
+            color: var(--md-text-secondary);
+        }
 
-    <!-- Manifest (PWA) -->
-    <link rel="manifest" href="favicon/manifest.json">
+        /* ======================================== */
+        /* CARD (Material Surface com elevação)     */
+        /* ======================================== */
+        .md-card {
+            background: var(--md-surface);
+            border-radius: var(--md-radius-xl);
+            box-shadow: var(--md-elevation-1);
+            transition: box-shadow var(--md-transition);
+            margin-bottom: var(--md-spacing-6);
+            overflow: hidden;
+        }
 
-    <!-- Windows -->
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="favicon/ms-icon-144x144.png">
+        .md-card:hover {
+            box-shadow: var(--md-elevation-3);
+        }
 
-    <!-- Cor do tema (mobile) -->
-    <meta name="theme-color" content="#ffffff">
+        .md-card__header {
+            padding: var(--md-spacing-6) var(--md-spacing-6) 0 var(--md-spacing-6);
+            border-bottom: 1px solid var(--md-divider);
+        }
 
+        .md-card__content {
+            padding: var(--md-spacing-6);
+        }
+
+        /* ======================================== */
+        /* FORMULÁRIO (Material Design)             */
+        /* ======================================== */
+        .md-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--md-spacing-6);
+        }
+
+        .md-form-field {
+            display: flex;
+            flex-direction: column;
+            gap: var(--md-spacing-2);
+        }
+
+        .md-form-field--full {
+            grid-column: 1 / -1;
+        }
+
+        .md-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--md-text-secondary);
+            letter-spacing: 0.5px;
+        }
+
+        .md-label .required {
+            color: var(--md-error);
+        }
+
+        /* Input Material Design */
+        .md-input {
+            background: var(--md-surface-variant);
+            border: 1.5px solid var(--md-border);
+            border-radius: var(--md-radius-medium);
+            padding: 12px 16px;
+            font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--md-text-primary);
+            transition: all var(--md-transition);
+            outline: none;
+        }
+
+        .md-input:hover {
+            border-color: var(--md-primary);
+        }
+
+        .md-input:focus {
+            border-color: var(--md-primary);
+            box-shadow: 0 0 0 3px rgba(110,168,255,0.2);
+        }
+
+        /* Select Material Design */
+        .md-select {
+            background: var(--md-surface-variant);
+            border: 1.5px solid var(--md-border);
+            border-radius: var(--md-radius-medium);
+            padding: 12px 16px;
+            font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--md-text-primary);
+            cursor: pointer;
+            transition: all var(--md-transition);
+            outline: none;
+        }
+
+        .md-select:hover {
+            border-color: var(--md-primary);
+        }
+
+        .md-select:focus {
+            border-color: var(--md-primary);
+            box-shadow: 0 0 0 3px rgba(110,168,255,0.2);
+        }
+
+        /* Checkbox Material Design */
+        .md-checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: var(--md-spacing-3);
+            margin-top: var(--md-spacing-3);
+        }
+
+        .md-checkbox {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--md-border);
+            border-radius: 4px;
+            background: transparent;
+            cursor: pointer;
+            position: relative;
+            transition: all var(--md-transition);
+        }
+
+        .md-checkbox:checked {
+            background: var(--md-primary);
+            border-color: var(--md-primary);
+        }
+
+        .md-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--md-on-primary);
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .md-checkbox:hover {
+            border-color: var(--md-primary);
+        }
+
+        /* Radio Group */
+        .md-radio-group {
+            display: flex;
+            gap: var(--md-spacing-6);
+            margin-top: var(--md-spacing-2);
+        }
+
+        .md-radio {
+            display: flex;
+            align-items: center;
+            gap: var(--md-spacing-2);
+            cursor: pointer;
+        }
+
+        .md-radio input {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--md-border);
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            transition: all var(--md-transition);
+        }
+
+        .md-radio input:checked {
+            border-color: var(--md-primary);
+            box-shadow: inset 0 0 0 5px var(--md-primary);
+        }
+
+        .md-radio input:hover {
+            border-color: var(--md-primary);
+        }
+
+        .md-radio span {
+            font-size: 0.875rem;
+            color: var(--md-text-secondary);
+        }
+
+        /* Botões Material */
+        .md-button-group {
+            display: flex;
+            gap: var(--md-spacing-4);
+            margin-top: var(--md-spacing-4);
+            grid-column: 1 / -1;
+        }
+
+        .md-button {
+            padding: 10px 24px;
+            border-radius: 24px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all var(--md-transition);
+            border: none;
+        }
+
+        .md-button--filled {
+            background: var(--md-primary);
+            color: var(--md-on-primary);
+            box-shadow: var(--md-elevation-1);
+        }
+
+        .md-button--filled:hover {
+            background: var(--md-primary-dark);
+            box-shadow: var(--md-elevation-2);
+            transform: translateY(-1px);
+        }
+
+        .md-button--outlined {
+            background: transparent;
+            border: 1.5px solid var(--md-border);
+            color: var(--md-text-primary);
+        }
+
+        .md-button--outlined:hover {
+            border-color: var(--md-primary);
+            background: rgba(110,168,255,0.08);
+        }
+
+        .md-button--text {
+            background: transparent;
+            color: var(--md-primary);
+        }
+
+        .md-button--text:hover {
+            background: rgba(110,168,255,0.08);
+        }
+
+        /* ======================================== */
+        /* DATA TABLE (Material Design 2)           */
+        /* ======================================== */
+        .md-data-table-container {
+            background: var(--md-surface);
+            border-radius: var(--md-radius-xl);
+            box-shadow: var(--md-elevation-2);
+            overflow-x: auto;
+        }
+
+        .md-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'DM Sans', sans-serif;
+            min-width: 700px;
+        }
+
+        .md-data-table thead tr {
+            background: rgba(110,168,255,0.03);
+            border-bottom: 2px solid var(--md-divider);
+        }
+
+        .md-data-table th {
+            text-align: left;
+            padding: 16px 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--md-text-secondary);
+            letter-spacing: 0.5px;
+        }
+
+        .md-data-table td {
+            padding: 14px 20px;
+            font-size: 0.875rem;
+            color: var(--md-text-primary);
+            border-bottom: 1px solid var(--md-divider);
+        }
+
+        .md-data-table tbody tr {
+            transition: background var(--md-transition);
+        }
+
+        .md-data-table tbody tr:hover {
+            background: rgba(110,168,255,0.04);
+        }
+
+        /* Checkbox na tabela */
+        .md-data-table .md-checkbox-table {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--md-border);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all var(--md-transition);
+            position: relative;
+        }
+
+        .md-data-table .md-checkbox-table:checked {
+            background: var(--md-primary);
+            border-color: var(--md-primary);
+        }
+
+        .md-data-table .md-checkbox-table:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--md-on-primary);
+            font-size: 11px;
+        }
+
+        /* Botões de ação da tabela */
+        .md-action-buttons {
+            display: flex;
+            gap: var(--md-spacing-2);
+        }
+
+        .md-icon-button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 20px;
+            transition: all var(--md-transition);
+            font-size: 1rem;
+        }
+
+        .md-icon-button--edit {
+            color: var(--md-primary);
+        }
+
+        .md-icon-button--edit:hover {
+            background: rgba(110,168,255,0.12);
+        }
+
+        .md-icon-button--delete {
+            color: var(--md-error);
+        }
+
+        .md-icon-button--delete:hover {
+            background: rgba(255,77,109,0.12);
+        }
+
+        /* Status badge */
+        .md-badge-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .md-badge-status--active {
+            background: rgba(0,229,160,0.12);
+            color: var(--md-success);
+        }
+
+        .md-badge-status--inactive {
+            background: rgba(255,77,109,0.12);
+            color: var(--md-error);
+        }
+
+        /* ======================================== */
+        /* MODAL (Material Design)                  */
+        /* ======================================== */
+        .md-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .md-modal.active {
+            display: flex;
+        }
+
+        .md-modal__content {
+            background: var(--md-surface);
+            border-radius: var(--md-radius-xl);
+            box-shadow: var(--md-elevation-4);
+            max-width: 400px;
+            width: 90%;
+            animation: modalSlideIn 0.2s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .md-modal__header {
+            padding: var(--md-spacing-6);
+            border-bottom: 1px solid var(--md-divider);
+        }
+
+        .md-modal__body {
+            padding: var(--md-spacing-6);
+        }
+
+        .md-modal__footer {
+            padding: var(--md-spacing-4) var(--md-spacing-6);
+            border-top: 1px solid var(--md-divider);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--md-spacing-3);
+        }
+
+        /* Toast notification */
+        .md-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--md-surface);
+            color: var(--md-text-primary);
+            padding: 12px 20px;
+            border-radius: var(--md-radius-medium);
+            box-shadow: var(--md-elevation-3);
+            font-size: 0.875rem;
+            z-index: 1100;
+            animation: toastIn 0.3s ease;
+            border-left: 3px solid var(--md-primary);
+        }
+
+        @keyframes toastIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Empty state */
+        .md-empty-state {
+            text-align: center;
+            padding: var(--md-spacing-12);
+            color: var(--md-text-secondary);
+        }
+
+        /* Footer */
+        .md-footer {
+            text-align: center;
+            padding: var(--md-spacing-6);
+            border-top: 1px solid var(--md-divider);
+            margin-top: var(--md-spacing-8);
+            color: var(--md-text-secondary);
+            font-size: 0.75rem;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .md-container {
+                padding: var(--md-spacing-4);
+            }
+            
+            .md-headline-large {
+                font-size: 1.75rem;
+            }
+            
+            .md-form {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-    <!-- =============================== -->
-    <!-- HEADER (CARREGADO VIA JS) -->
-    <!-- =============================== -->
-    <header id="header"></header>
-
-
-    <!-- =============================== -->
-    <!-- CONTEÚDO PRINCIPAL -->
-    <!-- Será carregado dinamicamente -->
-    <!-- =============================== -->
-    <main id="main"></main>
-
-
-    <!-- =============================== -->
-    <!-- FOOTER (CARREGADO VIA JS) -->
-    <!-- =============================== -->
-    <footer id="footer"></footer>
-
-
-    <!-- =============================== -->
-    <!-- TOAST (NOTIFICAÇÕES) -->
-    <!-- Ex: produto criado, editado, excluído -->
-    <!-- =============================== -->
-    <div class="toast-container" id="toastContainer"></div>
-
-
-    <!-- =============================== -->
-    <!-- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO -->
-    <!-- =============================== -->
-    <div class="modal-overlay" id="modalOverlay" style="display:none;">
-
-        <div class="modal-box">
-
-            <!-- TÍTULO -->
-            <h3>Confirmar Exclusão</h3>
-
-            <!-- TEXTO DINÂMICO -->
-            <p>
-                Tem certeza que deseja excluir o produto 
-                <strong id="modalProdutoNome"></strong>? 
-                Esta ação não pode ser desfeita.
-            </p>
-
-            <!-- BOTÕES -->
-            <div class="modal-btns">
-                <button class="btn-cancel-del" id="btnCancelDel">
-                    Cancelar
-                </button>
-
-                <button class="btn-confirm-del" id="btnConfirmDel">
-                    Excluir
-                </button>
+    <!-- App Bar Material -->
+    <header class="md-top-app-bar">
+        <div class="md-top-app-bar__row">
+            <div>
+                <span class="md-logo">System Product</span>
+                <span class="md-badge" style="margin-left: 12px;">Material Design 2</span>
             </div>
+            <div id="userInfo" style="display: flex; align-items: center; gap: 16px;">
+                <span style="font-size: 0.875rem;">👤 Visitante</span>
+            </div>
+        </div>
+    </header>
 
+    <main class="md-container">
+        <!-- Título -->
+        <div style="margin-bottom: 32px;">
+            <h1 class="md-headline-large">Gestão de <span style="color: var(--md-primary);">Produtos</span></h1>
+            <p class="md-body-medium">Cadastre, edite e gerencie seu estoque com uma interface Material Design 2</p>
+        </div>
+
+        <!-- FORMULÁRIO (5+ campos com tipos diferentes) -->
+        <div class="md-card">
+            <div class="md-card__header">
+                <h2 class="md-title-large">📝 Cadastro de Produto</h2>
+                <p class="md-body-medium">Preencha os campos abaixo para adicionar um novo produto</p>
+            </div>
+            <div class="md-card__content">
+                <div class="md-form" id="productForm">
+                    <!-- Campo 1: Text - Nome -->
+                    <div class="md-form-field">
+                        <label class="md-label">
+                            <span class="required">*</span> Nome do Produto
+                        </label>
+                        <input type="text" id="prodNome" class="md-input" placeholder="Ex: Camiseta Oversized" maxlength="100">
+                    </div>
+
+                    <!-- Campo 2: Number - Preço -->
+                    <div class="md-form-field">
+                        <label class="md-label">
+                            <span class="required">*</span> Preço (R$)
+                        </label>
+                        <input type="number" id="prodPreco" class="md-input" placeholder="0,00" step="0.01" min="0">
+                    </div>
+
+                    <!-- Campo 3: Number - Estoque -->
+                    <div class="md-form-field">
+                        <label class="md-label">
+                            <span class="required">*</span> Quantidade em Estoque
+                        </label>
+                        <input type="number" id="prodEstoque" class="md-input" placeholder="0" min="0">
+                    </div>
+
+                    <!-- Campo 4: Select - Categoria -->
+                    <div class="md-form-field">
+                        <label class="md-label">Categoria</label>
+                        <select id="prodCategoria" class="md-select">
+                            <option value="Eletrônicos">📱 Eletrônicos</option>
+                            <option value="Vestuário">👕 Vestuário</option>
+                            <option value="Alimentos">🍔 Alimentos</option>
+                            <option value="Móveis">🪑 Móveis</option>
+                            <option value="Livros">📚 Livros</option>
+                            <option value="Outros">📦 Outros</option>
+                        </select>
+                    </div>
+
+                    <!-- Campo 5: Date - Data de Validade -->
+                    <div class="md-form-field">
+                        <label class="md-label">Data de Validade</label>
+                        <input type="date" id="prodValidade" class="md-input">
+                    </div>
+
+                    <!-- Campo 6: Radio Group - Status -->
+                    <div class="md-form-field">
+                        <label class="md-label">Status do Produto</label>
+                        <div class="md-radio-group">
+                            <label class="md-radio">
+                                <input type="radio" name="status" value="active" checked> 
+                                <span>🟢 Ativo</span>
+                            </label>
+                            <label class="md-radio">
+                                <input type="radio" name="status" value="inactive"> 
+                                <span>🔴 Inativo</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Campo 7: Checkbox - Promoção -->
+                    <div class="md-form-field md-form-field--full">
+                        <div class="md-checkbox-wrapper">
+                            <input type="checkbox" id="prodPromocao" class="md-checkbox">
+                            <label for="prodPromocao" class="md-label" style="cursor: pointer;">Em promoção (aplicar desconto automático)</label>
+                        </div>
+                    </div>
+
+                    <!-- Botões -->
+                    <div class="md-button-group">
+                        <button class="md-button md-button--filled" id="btnSalvarProduto">💾 Salvar Produto</button>
+                        <button class="md-button md-button--outlined" id="btnLimparFormulario">🗑️ Limpar Formulário</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DATA TABLE (Material Design 2) -->
+        <div class="md-data-table-container">
+            <table class="md-data-table">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">
+                            <input type="checkbox" id="selectAllCheckbox" class="md-checkbox-table">
+                        </th>
+                        <th>ID</th>
+                        <th>Produto</th>
+                        <th>Categoria</th>
+                        <th>Preço</th>
+                        <th>Estoque</th>
+                        <th>Status</th>
+                        <th>Promoção</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaProdutos">
+                    <tr>
+                        <td colspan="9" class="md-empty-state">
+                            📦 Nenhum produto cadastrado. Utilize o formulário acima para começar.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer class="md-footer">
+        © 2025 System Product | Material Design 2 Implementation | HTML/CSS/JS Puro
+    </footer>
+
+    <!-- Modal de Confirmação -->
+    <div id="deleteModal" class="md-modal">
+        <div class="md-modal__content">
+            <div class="md-modal__header">
+                <h3 style="font-weight: 600;">Confirmar exclusão</h3>
+            </div>
+            <div class="md-modal__body">
+                <p>Tem certeza que deseja excluir o produto <strong id="deleteProductName"></strong>?</p>
+                <p style="font-size: 0.75rem; color: var(--md-text-secondary); margin-top: 8px;">Esta ação não pode ser desfeita.</p>
+            </div>
+            <div class="md-modal__footer">
+                <button class="md-button md-button--text" id="cancelDeleteBtn">Cancelar</button>
+                <button class="md-button md-button--filled" id="confirmDeleteBtn" style="background: var(--md-error);">Excluir</button>
+            </div>
         </div>
     </div>
 
+    <script>
+        // ========================================
+        // MATERIAL DATA TABLE - CRUD COMPLETO
+        // ========================================
+        
+        const STORAGE_KEY = 'mdc_produtos';
+        let produtos = [];
+        let deleteId = null;
 
-    <!-- =============================== -->
-    <!-- SCRIPT PRINCIPAL -->
-    <!-- =============================== -->
-    <script src="main.js"></script>
+        // Carregar produtos do localStorage
+        function carregarProdutos() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                produtos = JSON.parse(stored);
+            } else {
+                // Dados de exemplo
+                produtos = [
+                    {
+                        id: Date.now() + 1,
+                        nome: "Camiseta Oversized",
+                        preco: 89.90,
+                        estoque: 45,
+                        categoria: "Vestuário",
+                        validade: "2026-12-31",
+                        status: "active",
+                        promocao: true
+                    },
+                    {
+                        id: Date.now() + 2,
+                        nome: "Fone Bluetooth",
+                        preco: 199.90,
+                        estoque: 12,
+                        categoria: "Eletrônicos",
+                        validade: "",
+                        status: "active",
+                        promocao: false
+                    }
+                ];
+                salvarProdutos();
+            }
+            renderizarTabela();
+        }
 
-</body>
-</html>
+        // Salvar no localStorage
+        function salvarProdutos() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(produtos));
+        }
+
+        // Gerar ID único
+        function gerarId() {
+            return Date.now();
+        }
+
+        // Renderizar tabela Material
+        function renderizarTabela() {
+            const tbody = document.getElementById('tabelaProdutos');
+            
+            if (produtos.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="md-empty-state">
+                            📦 Nenhum produto cadastrado. Utilize o formulário acima para começar.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = produtos.map(prod => `
+                <tr>
+                    <td>
+                        <input type="checkbox" class="md-checkbox-table" data-id="${prod.id}">
+                    </td>
+                    <td>#${prod.id.toString().slice(-6)}</td>
+                    <td><strong>${escapeHtml(prod.nome)}</strong></td>
+                    <td>${escapeHtml(prod.categoria || 'Outros')}</td>
+                    <td>R$ ${prod.preco.toFixed(2)}</td>
+                    <td>${prod.estoque} un.</td>
+                    <td>
+                        <span class="md-badge-status ${prod.status === 'active' ? 'md-badge-status--active' : 'md-badge-status--inactive'}">
+                            ${prod.status === 'active' ? '🟢 Ativo' : '🔴 Inativo'}
+                        </span>
+                    </td>
+                    <td>${prod.promocao ? '🏷️ Sim' : '❌ Não'}</td>
+                    <td class="md-action-buttons">
+                        <button class="md-icon-button md-icon-button--edit" onclick="editarProduto(${prod.id})" title="Editar">✏️</button>
+                        <button class="md-icon-button md-icon-button--delete" onclick="confirmarExclusao(${prod.id}, '${escapeHtml(prod.nome)}')" title="Excluir">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Escapar HTML
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        // Salvar produto do formulário
+        function salvarProduto() {
+            const nome = document.getElementById('prodNome').value.trim();
+            const preco = parseFloat(document.getElementById('prodPreco').value);
+            const estoque = parseInt(document.getElementById('prodEstoque').value);
+            const categoria = document.getElementById('prodCategoria').value;
+            const validade = document.getElementById('prodValidade').value;
+            const statusRadio = document.querySelector('input[name="status"]:checked');
+            const status = statusRadio ? statusRadio.value : 'active';
+            const promocao = document.getElementById('prodPromocao').checked;
+
+            // Validações
+            if (!nome) {
+                mostrarToast('❌ Por favor, informe o nome do produto', 'error');
+                return;
+            }
+            if (isNaN(preco) || preco < 0) {
+                mostrarToast('❌ Informe um preço válido', 'error');
+                return;
+            }
+            if (isNaN(estoque) || estoque < 0) {
+                mostrarToast('❌ Informe uma quantidade válida', 'error');
+                return;
+            }
+
+            const novoProduto = {
+                id: gerarId(),
+                nome: nome,
+                preco: preco,
+                estoque: estoque,
+                categoria: categoria,
+                validade: validade,
+                status: status,
+                promocao: promocao
+            };
+
+            produtos.push(novoProduto);
+            salvarProdutos();
+            renderizarTabela();
+            limparFormulario();
+            mostrarToast('✅ Produto cadastrado com sucesso!', 'success');
+        }
+
+        // Editar produto
+        function editarProduto(id) {
+            const produto = produtos.find(p => p.id === id);
+            if (!produto) return;
+
+            document.getElementById('prodNome').value = produto.nome;
+            document.getElementById('prodPreco').value = produto.preco;
+            document.getElementById('prodEstoque').value = produto.estoque;
+            document.getElementById('prodCategoria').value = produto.categoria || 'Outros';
+            document.getElementById('prodValidade').value = produto.validade || '';
+            
+            const statusRadio = document.querySelector(`input[name="status"][value="${produto.status}"]`);
+            if (statusRadio) statusRadio.checked = true;
+            
+            document.getElementById('prodPromocao').checked = produto.promocao || false;
+
+            // Remove o produto antigo
+            produtos = produtos.filter(p => p.id !== id);
+            
+            // Scroll para o formulário
+            document.querySelector('.md-card').scrollIntoView({ behavior: 'smooth' });
+            
+            mostrarToast('✏️ Edite os campos e clique em Salvar', 'info');
+        }
+
+        // Confirmar exclusão
+        function confirmarExclusao(id, nome) {
+            deleteId = id;
+            document.getElementById('deleteProductName').textContent = nome;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        function excluirProdutoConfirmado() {
+            if (deleteId) {
+                produtos = produtos.filter(p => p.id !== deleteId);
+                salvarProdutos();
+                renderizarTabela();
+                mostrarToast('🗑️ Produto excluído com sucesso', 'error');
+                deleteId = null;
+            }
+            document.getElementById('deleteModal').classList.remove('active');
+        }
+
+        function fecharModal() {
+            document.getElementById('deleteModal').classList.remove('active');
+            deleteId = null;
+        }
+
+        // Limpar formulário
+        function limparFormulario() {
+            document.getElementById('prodNome').value = '';
+            document.getElementById('prodPreco').value = '';
+            document.getElementById('prodEstoque').value = '';
+            document.getElementById('prodCategoria').value = 'Eletrônicos';
+            document.getElementById('prodValidade').value = '';
+            document.querySelector('input[name="status"][value="active"]').checked = true;
+            document.getElementById('prodPromocao').checked = false;
+        }
+
+        // Toast notification
+        function mostrarToast(mensagem, tipo = 'success') {
+            const toast = document.createElement('div');
+            toast.className = 'md-toast';
+            toast.style.borderLeftColor = tipo === 'success' ? 'var(--md-success)' : tipo === 'error' ? 'var(--md-error)' : 'var(--md-primary)';
+            toast.textContent = mensagem;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Selecionar todos os checkboxes
+        function initSelectAll() {
+            const selectAll = document.getElementById('selectAllCheckbox');
+            if (!selectAll) return;
+            
+            selectAll.addEventListener('change', function() {
+                const checkboxes = document.querySelectorAll('#tabelaProdutos .md-check
