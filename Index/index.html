@@ -994,10 +994,157 @@
             }, 3000);
         }
 
-        // Selecionar todos os checkboxes
+                // Selecionar todos os checkboxes
         function initSelectAll() {
             const selectAll = document.getElementById('selectAllCheckbox');
             if (!selectAll) return;
             
             selectAll.addEventListener('change', function() {
-                const checkboxes = document.querySelectorAll('#tabelaProdutos .md-check
+                const checkboxes = document.querySelectorAll('#tabelaProdutos .md-checkbox-table');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = selectAll.checked;
+                });
+            });
+        }
+
+        // Atualizar estado do checkbox "Selecionar Todos" quando checkboxes individuais mudam
+        function updateSelectAllState() {
+            const selectAll = document.getElementById('selectAllCheckbox');
+            if (!selectAll) return;
+            
+            const checkboxes = document.querySelectorAll('#tabelaProdutos .md-checkbox-table');
+            const allChecked = checkboxes.length > 0 && Array.from(checkboxes).every(cb => cb.checked);
+            selectAll.checked = allChecked;
+        }
+
+        // Excluir produtos selecionados
+        function excluirSelecionados() {
+            const checkboxes = document.querySelectorAll('#tabelaProdutos .md-checkbox-table:checked');
+            if (checkboxes.length === 0) {
+                mostrarToast('⚠️ Selecione pelo menos um produto para excluir', 'info');
+                return;
+            }
+            
+            if (confirm(`Tem certeza que deseja excluir ${checkboxes.length} produto(s)?`)) {
+                checkboxes.forEach(checkbox => {
+                    const id = parseInt(checkbox.getAttribute('data-id'));
+                    produtos = produtos.filter(p => p.id !== id);
+                });
+                salvarProdutos();
+                renderizarTabela();
+                mostrarToast(`🗑️ ${checkboxes.length} produto(s) excluído(s) com sucesso`, 'error');
+            }
+        }
+
+        // Event Listeners
+        document.getElementById('btnSalvarProduto')?.addEventListener('click', salvarProduto);
+        document.getElementById('btnLimparFormulario')?.addEventListener('click', limparFormulario);
+        document.getElementById('cancelDeleteBtn')?.addEventListener('click', fecharModal);
+        document.getElementById('confirmDeleteBtn')?.addEventListener('click', excluirProdutoConfirmado);
+        
+        // Fechar modal ao clicar fora
+        document.getElementById('deleteModal')?.addEventListener('click', function(e) {
+            if (e.target === this) fecharModal();
+        });
+
+        // Exportar dados para CSV
+        function exportarCSV() {
+            if (produtos.length === 0) {
+                mostrarToast('📭 Nenhum produto para exportar', 'info');
+                return;
+            }
+            
+            const headers = ['ID', 'Nome', 'Categoria', 'Preço', 'Estoque', 'Status', 'Promoção', 'Data Validade'];
+            const rows = produtos.map(p => [
+                p.id,
+                p.nome,
+                p.categoria || 'Outros',
+                p.preco,
+                p.estoque,
+                p.status === 'active' ? 'Ativo' : 'Inativo',
+                p.promocao ? 'Sim' : 'Não',
+                p.validade || '-'
+            ]);
+            
+            const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            link.setAttribute('download', 'produtos_exportados.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            mostrarToast('📥 Produtos exportados com sucesso!', 'success');
+        }
+
+        // Adicionar botão de exportar na interface
+        function adicionarBotaoExportar() {
+            const container = document.querySelector('.md-data-table-container');
+            const header = document.createElement('div');
+            header.style.cssText = 'padding: 16px; display: flex; justify-content: flex-end; border-bottom: 1px solid var(--md-divider);';
+            header.innerHTML = `
+                <button class="md-button md-button--outlined" id="btnExportar" style="display: flex; align-items: center; gap: 8px;">
+                    📥 Exportar CSV
+                </button>
+                <button class="md-button md-button--outlined" id="btnExcluirSelecionados" style="display: flex; align-items: center; gap: 8px; margin-left: 12px; color: var(--md-error);">
+                    🗑️ Excluir Selecionados
+                </button>
+            `;
+            container.insertBefore(header, container.firstChild);
+            
+            document.getElementById('btnExportar')?.addEventListener('click', exportarCSV);
+            document.getElementById('btnExcluirSelecionados')?.addEventListener('click', excluirSelecionados);
+        }
+
+        // Atualizar informações do usuário (simulação)
+        function atualizarUsuario() {
+            const userInfo = document.getElementById('userInfo');
+            if (userInfo) {
+                const usuarioLogado = sessionStorage.getItem('usuarioLogado') || 'Visitante';
+                userInfo.innerHTML = `
+                    <span style="font-size: 0.875rem;">👤 ${usuarioLogado}</span>
+                    ${usuarioLogado !== 'Visitante' ? '<button class="md-button md-button--text" id="btnSair" style="padding: 4px 12px;">Sair</button>' : ''}
+                `;
+                
+                document.getElementById('btnSair')?.addEventListener('click', () => {
+                    sessionStorage.clear();
+                    mostrarToast('👋 Logout realizado com sucesso', 'info');
+                    setTimeout(() => location.reload(), 1000);
+                });
+            }
+        }
+
+        // Contador de produtos no estoque baixo
+        function mostrarAlertasEstoque() {
+            const produtosBaixoEstoque = produtos.filter(p => p.estoque < 10 && p.status === 'active');
+            if (produtosBaixoEstoque.length > 0) {
+                setTimeout(() => {
+                    mostrarToast(`⚠️ Atenção! ${produtosBaixoEstoque.length} produto(s) com estoque baixo (menos de 10 unidades)`, 'info');
+                }, 500);
+            }
+        }
+
+        // Inicialização
+        function init() {
+            carregarProdutos();
+            initSelectAll();
+            adicionarBotaoExportar();
+            atualizarUsuario();
+            mostrarAlertasEstoque();
+            
+            // Adicionar evento de mudança nos checkboxes da tabela via delegação
+            document.getElementById('tabelaProdutos')?.addEventListener('change', function(e) {
+                if (e.target.classList.contains('md-checkbox-table')) {
+                    updateSelectAllState();
+                }
+            });
+        }
+
+        // Iniciar aplicação quando o DOM estiver pronto
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
