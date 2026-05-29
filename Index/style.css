@@ -334,7 +334,7 @@ main {
 /* ======================================== */
 .md-data-table-container {
     background: var(--surface);
-    border-radius: var(--md-radius-xl);
+    border-radius: 4px;
     box-shadow: var(--md-elevation-2);
     overflow-x: auto;
 }
@@ -894,7 +894,7 @@ input.error-field {
     margin-top: var(--md-spacing-6);
     padding: var(--md-spacing-4) var(--md-spacing-6);
     background: var(--surface);
-    border-radius: var(--md-radius-xl);
+    border-radius: 4px;
     border: 1px solid var(--border);
 }
 
