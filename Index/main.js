@@ -213,7 +213,7 @@ function renderizarTabela() {
     });
 
     if (produtosPaginados.length === 0 && totalProdutos === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" class="md-empty-state">📦 Nenhum produto cadastrado. Utilize o formulário acima para começar.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" class="md-empty-state">📦 Nenhum produto cadastrado. Utilize a aba "Cadastrar" para começar.</td></tr>`;
         atualizarPaginacaoUI(0, 0);
         return;
     }
