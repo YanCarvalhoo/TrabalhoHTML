@@ -336,7 +336,7 @@ main {
     background: var(--surface);
     border-radius: 4px;
     box-shadow: var(--md-elevation-2);
-    overflow-x: auto;
+    overflow-x: visible;
 }
 
 .md-data-table {
@@ -1090,4 +1090,236 @@ input.error-field {
 
 .md-data-table th .sort-arrow {
     color: var(--md-primary);
+}
+
+/* ======================================== */
+/* LINHAS SELECIONADAS - MATERIAL DESIGN   */
+/* ======================================== */
+
+/* Estilo para linhas selecionadas */
+.md-data-table tbody tr.selected-row,
+.mdc-data-table__row--selected {
+    background: rgba(110, 168, 255, 0.12) !important;
+    border-left: 3px solid var(--md-primary);
+    transition: all var(--md-transition);
+}
+
+/* Efeito hover em linhas selecionadas */
+.md-data-table tbody tr.selected-row:hover,
+.mdc-data-table__row--selected:hover {
+    background: rgba(110, 168, 255, 0.18) !important;
+}
+
+/* Mantém o destaque mesmo em hover normal */
+.md-data-table tbody tr:hover {
+    background: rgba(110, 168, 255, 0.04);
+}
+
+/* Para a nova estrutura MDC */
+.mdc-data-table__row.mdc-data-table__row--selected {
+    background: rgba(110, 168, 255, 0.12) !important;
+    border-left: 3px solid var(--md-primary);
+}
+
+.mdc-data-table__row.mdc-data-table__row--selected:hover {
+    background: rgba(110, 168, 255, 0.18) !important;
+}
+
+/* Animação suave para linhas selecionadas */
+.md-data-table tbody tr,
+.mdc-data-table__row {
+    transition: background 0.2s ease, border-left 0.2s ease;
+}
+
+.md-data-table tbody tr.selected-row,
+.mdc-data-table__row--selected {
+    animation: rowSelectHighlight 0.3s ease;
+}
+
+@keyframes rowSelectHighlight {
+    0% {
+        background: rgba(110, 168, 255, 0.05);
+    }
+    100% {
+        background: rgba(110, 168, 255, 0.12);
+    }
+}
+
+/* ======================================== */
+/* STATUS DROPDOWN MENU - MATERIAL DESIGN   */
+/* ======================================== */
+
+.status-dropdown {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.status-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--md-transition);
+    background: transparent;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.status-trigder:hover {
+    filter: brightness(1.1);
+    transform: scale(1.02);
+}
+
+.status-trigger .dropdown-arrow {
+    font-size: 0.7rem;
+    opacity: 0.7;
+    transition: transform var(--md-transition);
+}
+
+.status-dropdown.open .status-trigger .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+/* Menu dropdown */
+.status-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    background: var(--surface);
+    border-radius: var(--md-radius-medium);
+    box-shadow: var(--md-elevation-3);
+    border: 1px solid var(--border);
+    min-width: 120px;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all var(--md-transition);
+}
+
+.status-dropdown.open .status-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.status-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    color: var(--text);
+    cursor: pointer;
+    transition: background var(--md-transition);
+}
+
+.status-option:hover {
+    background: rgba(110, 168, 255, 0.08);
+}
+
+.status-option.active {
+    background: rgba(110, 168, 255, 0.12);
+    color: var(--md-primary);
+}
+
+.status-option .status-icon {
+    font-size: 0.9rem;
+}
+
+/* Fechar dropdown ao clicar fora */
+.status-dropdown-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99;
+    display: none;
+}
+
+.status-dropdown.open ~ .status-dropdown-overlay {
+    display: block;
+}
+
+/* ======================================== */
+/* AJUSTE PARA REMOVER SCROLL DA TABELA    */
+/* ======================================== */
+
+.md-data-table-container {
+    overflow-x: visible;
+}
+
+/* Para telas menores que 1200px, permite scroll suave apenas quando necessário */
+@media (max-width: 1200px) {
+    .md-data-table-container {
+        overflow-x: auto;
+    }
+}
+
+/* Garante que a tabela ocupe 100% do container */
+.md-data-table {
+    width: 100%;
+    table-layout: auto;
+}
+
+/* Ajusta o padding das células para telas menores */
+@media (max-width: 768px) {
+    .md-data-table th,
+    .md-data-table td {
+        padding: 12px 16px;
+    }
+}
+
+/* ======================================== */
+/* ALINHAMENTO DA COLUNA ESTOQUE           */
+/* ======================================== */
+
+/* Alinha o conteúdo da coluna Estoque à direita */
+.md-data-table td:nth-child(6),
+.md-data-table th:nth-child(6) {
+    text-align: right;
+}
+
+/* Para a versão responsiva (mobile) */
+@media (max-width: 700px) {
+    .md-data-table td:nth-child(6) {
+        text-align: right;
+        justify-content: flex-end;
+    }
+}
+
+/* Alinhamento específico para o cabeçalho da coluna Estoque */
+.md-data-table th:nth-child(6) {
+    text-align: right;
+}
+
+/* Classe específica para a célula de estoque */
+.estoque-cell {
+    text-align: right;
+    font-weight: 500;
+}
+
+/* Para a versão responsiva (mobile), mantém o alinhamento correto */
+@media (max-width: 700px) {
+    .md-data-table td.estoque-cell {
+        display: flex;
+        justify-content: flex-end;
+        text-align: right;
+    }
+    
+    .md-data-table td.estoque-cell::before {
+        content: "Estoque";
+        font-weight: 600;
+        color: var(--muted);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-right: auto;
+    }
 }

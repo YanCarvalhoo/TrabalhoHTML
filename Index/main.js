@@ -204,6 +204,14 @@ function renderizarTabela() {
     const end = start + paginacaoConfig.rowsPerPage;
     const produtosPaginados = produtosOrdenados.slice(start, end);
 
+    // Recupera os IDs dos produtos que estão com checkbox marcado (para manter seleção)
+    const selectedIds = new Set();
+    const currentCheckboxes = document.querySelectorAll('#tabelaProdutos .md-checkbox-table:checked');
+    currentCheckboxes.forEach(cb => {
+        const id = parseInt(cb.getAttribute('data-id'));
+        if (!isNaN(id)) selectedIds.add(id);
+    });
+
     if (produtosPaginados.length === 0 && totalProdutos === 0) {
         tbody.innerHTML = `<tr><td colspan="10" class="md-empty-state">📦 Nenhum produto cadastrado. Utilize o formulário acima para começar.</td></tr>`;
         atualizarPaginacaoUI(0, 0);
@@ -216,28 +224,55 @@ function renderizarTabela() {
         return;
     }
 
-    tbody.innerHTML = produtosPaginados.map(prod => `
-        <tr>
-            <td><input type="checkbox" class="md-checkbox-table" data-id="${prod.id}"></td>
-            <td>#${prod.id.toString().slice(-6)}</td>
-            <td><strong>${escapeHtml(prod.nome)}</strong></td>
-            <td>${escapeHtml(prod.categoria || 'Outros')}</td>
-            <td>R$ ${prod.preco.toFixed(2)}</td>
-            <td>${prod.estoque} un.</td>
-            <td>${prod.validade ? formatarData(prod.validade) : '—'}</td>
-            <td>
-                <span class="md-badge-status ${prod.status === 'active' ? 'md-badge-status--active' : 'md-badge-status--inactive'}">
-                    ${prod.status === 'active' ? '🟢 Ativo' : '🔴 Inativo'}
-                </span>
-            </td>
-            <td>${prod.promocao ? '🏷️ Sim' : '❌ Não'}</td>
-            <td class="md-action-buttons">
-                <button class="md-icon-button md-icon-button--edit" onclick="window.editarProduto(${prod.id})" title="Editar">✏️</button>
-                <button class="md-icon-button md-icon-button--delete" onclick="window.confirmarExclusao(${prod.id}, '${escapeHtml(prod.nome)}')" title="Excluir">🗑️</button>
-            </td>
-        </tr>
-    `).join('');
+    tbody.innerHTML = produtosPaginados.map(prod => {
+        // Verifica se este produto estava selecionado antes da renderização
+        const isSelected = selectedIds.has(prod.id);
+        const selectedClass = isSelected ? 'selected-row' : '';
+        const dropdownId = `status-dropdown-${prod.id}`;
+        
+        const statusClass = prod.status === 'active' ? 'md-badge-status--active' : 'md-badge-status--inactive';
+        const statusText = prod.status === 'active' ? '🟢 Ativo' : '🔴 Inativo';
+        
+        return `
+            <tr class="${selectedClass}" data-row-id="${prod.id}">
+                <td style="width: 50px;">
+                    <input type="checkbox" class="md-checkbox-table" data-id="${prod.id}" ${isSelected ? 'checked' : ''}>
+                </td>
+                <td>#${prod.id.toString().slice(-6)}</td>
+                <td><strong>${escapeHtml(prod.nome)}</strong></td>
+                <td>${escapeHtml(prod.categoria || 'Outros')}</td>
+                <td>R$ ${prod.preco.toFixed(2)}</td>
+                <td class="estoque-cell">${prod.estoque}</td>
+                <td>${prod.validade ? formatarData(prod.validade) : '—'}</td>
+                <td>
+                    <div class="status-dropdown" id="${dropdownId}">
+                        <button class="status-trigger ${statusClass}" onclick="toggleStatusDropdown(event, '${dropdownId}')">
+                            <span>${statusText}</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="status-menu">
+                            <div class="status-option ${prod.status === 'active' ? 'active' : ''}" onclick="changeProductStatus(${prod.id}, 'active', event)">
+                                <span class="status-icon">🟢</span>
+                                <span>Ativo</span>
+                            </div>
+                            <div class="status-option ${prod.status === 'inactive' ? 'active' : ''}" onclick="changeProductStatus(${prod.id}, 'inactive', event)">
+                                <span class="status-icon">🔴</span>
+                                <span>Inativo</span>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>${prod.promocao ? '🏷️ Sim' : '❌ Não'}</td>
+                <td class="md-action-buttons">
+                    <button class="md-icon-button md-icon-button--edit" onclick="window.editarProduto(${prod.id})" title="Editar">✏️</button>
+                    <button class="md-icon-button md-icon-button--delete" onclick="window.confirmarExclusao(${prod.id}, '${escapeHtml(prod.nome)}')" title="Excluir">🗑️</button>
+                </td>
+            </tr>
+        `;
+    }).join('');
 
+    // Adiciona eventos para os checkboxes
+    adicionarEventosCheckbox();
     initSelectAll();
     atualizarIndicadoresOrdenacao();
     atualizarPaginacaoUI(totalProdutos, totalPages);
@@ -490,12 +525,32 @@ function limparFormulario() {
 function initSelectAll() {
     const selectAll = document.getElementById('selectAllCheckbox');
     if (!selectAll) return;
+    
     const newSelectAll = selectAll.cloneNode(true);
     selectAll.parentNode.replaceChild(newSelectAll, selectAll);
-    newSelectAll.addEventListener('change', function () {
+    
+    newSelectAll.addEventListener('change', function(e) {
+        const isChecked = this.checked;
         const checkboxes = document.querySelectorAll('#tabelaProdutos .md-checkbox-table');
-        checkboxes.forEach(cb => cb.checked = this.checked);
+        
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = isChecked;
+            const row = checkbox.closest('tr');
+            if (isChecked) {
+                row.classList.add('selected-row');
+            } else {
+                row.classList.remove('selected-row');
+            }
+        });
+        
+        // Se não estiver marcado e nem todos estão marcados, remove indeterminate
+        if (!isChecked) {
+            this.indeterminate = false;
+        }
     });
+    
+    // Configura o estado inicial do select all
+    atualizarSelectAllCheckbox();
 }
 
 // ========================================
@@ -539,5 +594,107 @@ function formatarData(dataISO) {
     return `${dia}/${mes}/${ano}`;
 }
 
+// ========================================
+// FUNÇÃO PARA GERENCIAR CHECKBOXES E DESTAQUE DAS LINHAS
+// ========================================
+function adicionarEventosCheckbox() {
+    const checkboxes = document.querySelectorAll('#tabelaProdutos .md-checkbox-table');
+    checkboxes.forEach(checkbox => {
+        // Remove evento anterior para evitar duplicação
+        checkbox.removeEventListener('change', handleCheckboxChange);
+        // Adiciona novo evento
+        checkbox.addEventListener('change', handleCheckboxChange);
+    });
+}
+
+function handleCheckboxChange(e) {
+    const checkbox = e.target;
+    const row = checkbox.closest('tr');
+    
+    if (checkbox.checked) {
+        // Adiciona classe de destaque na linha
+        row.classList.add('selected-row');
+    } else {
+        // Remove classe de destaque da linha
+        row.classList.remove('selected-row');
+    }
+    
+    // Atualiza o estado do checkbox "selecionar todos"
+    atualizarSelectAllCheckbox();
+}
+
+function atualizarSelectAllCheckbox() {
+    const selectAll = document.getElementById('selectAllCheckbox');
+    if (!selectAll) return;
+    
+    const checkboxes = document.querySelectorAll('#tabelaProdutos .md-checkbox-table');
+    const checkedCheckboxes = document.querySelectorAll('#tabelaProdutos .md-checkbox-table:checked');
+    
+    if (checkboxes.length === 0) {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+    } else if (checkedCheckboxes.length === 0) {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+    } else if (checkedCheckboxes.length === checkboxes.length) {
+        selectAll.checked = true;
+        selectAll.indeterminate = false;
+    } else {
+        selectAll.checked = false;
+        selectAll.indeterminate = true;
+    }
+}
+
+// ========================================
+// FUNÇÕES PARA O MENU DE STATUS
+// ========================================
+
+function toggleStatusDropdown(event, dropdownId) {
+    event.stopPropagation();
+    
+    // Fecha todos os outros dropdowns abertos
+    document.querySelectorAll('.status-dropdown.open').forEach(dropdown => {
+        if (dropdown.id !== dropdownId) {
+            dropdown.classList.remove('open');
+        }
+    });
+    
+    const dropdown = document.getElementById(dropdownId);
+    dropdown.classList.toggle('open');
+}
+
+function changeProductStatus(productId, newStatus, event) {
+    event.stopPropagation();
+    
+    // Encontra o produto e atualiza o status
+    const produto = produtos.find(p => p.id === productId);
+    if (produto) {
+        produto.status = newStatus;
+        salvarProdutosStorage();
+        
+        // Fecha o dropdown
+        const dropdown = document.getElementById(`status-dropdown-${productId}`);
+        if (dropdown) {
+            dropdown.classList.remove('open');
+        }
+        
+        // Re-renderiza a tabela para atualizar a visualização
+        renderizarTabela();
+        
+        // Mostra notificação
+        const statusText = newStatus === 'active' ? 'Ativado' : 'Inativado';
+        mostrarToast(`✅ Produto ${statusText} com sucesso!`, 'success');
+    }
+}
+
+// Fechar dropdowns ao clicar fora
+document.addEventListener('click', function() {
+    document.querySelectorAll('.status-dropdown.open').forEach(dropdown => {
+        dropdown.classList.remove('open');
+    });
+});
+
 window.editarProduto = editarProduto;
 window.confirmarExclusao = confirmarExclusao;
+window.toggleStatusDropdown = toggleStatusDropdown;
+window.changeProductStatus = changeProductStatus;
