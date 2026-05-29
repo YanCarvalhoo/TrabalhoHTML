@@ -13,7 +13,6 @@
     <div class="home-cards">
 
         <!-- CARD: VER PRODUTOS -->
-        <!-- data-goto usado no JS para trocar de tela -->
         <div class="home-card" data-goto="produtos">
             <div class="home-card-icon">📦</div>
             <h3>Ver Produtos</h3>
@@ -36,96 +35,60 @@
 <!-- =============================== -->
 <div class="screen" id="screen-produtos">
 
-    <!-- CABEÇALHO -->
-    <div class="page-header">
-
-        <!-- TÍTULO -->
-        <div class="page-title">
-            Produtos
-            <span>Lista de todos os produtos cadastrados</span>
-        </div>
-
-        <!-- BOTÃO: NOVO PRODUTO -->
-        <button class="btn-primary" id="btnNovoProduto">
-            + Novo Produto
-        </button>
-
-    </div>
-
-
-    <!-- =============================== -->
-    <!-- FORMULÁRIO (CRIAR / EDITAR) -->
-    <!-- =============================== -->
-    <div class="card-criar" id="cardCriar" style="display:none;">
-
-        <!-- TÍTULO DINÂMICO (novo / editar) -->
-        <div class="card-criar-header" id="formTitulo">
-            Novo Produto
-        </div>
-
-        <div class="card-criar-body">
-
-            <!-- ID OCULTO (usado para edição) -->
-            <input type="hidden" id="editandoId">
-
-            <!-- NOME -->
-            <div class="input-group">
-                <label>Nome do Produto *</label>
-                <input type="text" id="inputNome" placeholder="Ex: Camiseta Azul">
-                <div class="field-error" id="erroNome">
-                    Informe o nome do produto.
-                </div>
-            </div>
-
-            <!-- PREÇO -->
-            <div class="input-group">
-                <label>Preço (R$) *</label>
-                <input type="number" id="inputPreco" placeholder="0,00" min="0" step="0.01">
-                <div class="field-error" id="erroPreco">
-                    Informe um preço válido.
-                </div>
-            </div>
-
-            <!-- ESTOQUE -->
-            <div class="input-group">
-                <label>Estoque *</label>
-                <input type="number" id="inputEstoque" placeholder="0" min="0">
-                <div class="field-error" id="erroEstoque">
-                    Informe a quantidade em estoque.
-                </div>
-            </div>
-
-            <!-- BOTÕES -->
-            <button class="btn-salvar" id="btnSalvar">Salvar</button>
-            <button class="btn-cancelar" id="btnCancelar">Limpar</button>
-
-        </div>
-    </div>
-
-
-    <!-- =============================== -->
-    <!-- TABELA DE PRODUTOS -->
-    <!-- =============================== -->
-    <div class="table-wrap">
-
-        <table>
-
-            <!-- CABEÇALHO -->
+    <!-- DATA TABLE (Material Design 2) -->
+    <div class="md-data-table-container">
+        <table class="md-data-table">
             <thead>
                 <tr>
+                    <th style="width: 50px;">
+                        <input type="checkbox" id="selectAllCheckbox" class="md-checkbox-table">
+                    </th>
                     <th>ID</th>
                     <th>Produto</th>
+                    <th>Categoria</th>
                     <th>Preço</th>
                     <th>Estoque</th>
+                    <th>Status</th>
+                    <th>Promoção</th>
                     <th>Ações</th>
                 </tr>
             </thead>
-
-            <!-- CORPO DINÂMICO (JS PREENCHE) -->
-            <tbody id="tabelaProdutos"></tbody>
-
+            <tbody id="tabelaProdutos">
+                <tr>
+                    <td colspan="9" class="md-empty-state">
+                        📦 Nenhum produto cadastrado. Utilize o formulário acima para começar.
+                    </td>
+                </tr>
+            </tbody>
         </table>
+    </div>
 
+    <!-- PAGINAÇÃO DA TABELA -->
+    <div class="md-pagination">
+        <div class="md-pagination__rows">
+            <label>Linhas por página:</label>
+            <select id="rowsPerPage" class="md-pagination__select">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+        
+        <div class="md-pagination__info">
+            <span id="paginationInfo">1-10 de 100</span>
+        </div>
+        
+        <div class="md-pagination__controls">
+            <button class="md-pagination__btn" id="firstPageBtn" title="Primeira página">⏮️</button>
+            <button class="md-pagination__btn" id="prevPageBtn" title="Página anterior">◀</button>
+            <span class="md-pagination__current">
+                Página <span id="currentPage">1</span> de <span id="totalPages">1</span>
+            </span>
+            <button class="md-pagination__btn" id="nextPageBtn" title="Próxima página">▶</button>
+            <button class="md-pagination__btn" id="lastPageBtn" title="Última página">⏭️</button>
+        </div>
     </div>
 </div>
 
@@ -135,55 +98,86 @@
 <!-- =============================== -->
 <div class="screen" id="screen-cadastrar">
 
-    <!-- CABEÇALHO -->
-    <div class="page-header">
-        <div class="page-title">
-            Cadastrar Produto
-            <span>Preencha os campos abaixo</span>
+    <!-- FORMULÁRIO (5+ campos com tipos diferentes) -->
+    <div class="md-card">
+        <div class="md-card__header">
+            <h2 class="md-title-large">📝 Cadastro de Produto</h2>
+            <p class="md-body-medium">Preencha os campos abaixo para adicionar um novo produto</p>
         </div>
-    </div>
+        <div class="md-card__content">
+            <div class="md-form" id="productForm">
+                <!-- Campo 1: Text - Nome -->
+                <div class="md-form-field">
+                    <label class="md-label" for="prodNome">
+                        <span class="required">*</span> Nome do Produto
+                    </label>
+                    <input type="text" id="prodNome" class="md-input" placeholder="Ex: Camiseta Oversized" maxlength="100">
+                </div>
 
+                <!-- Campo 2: Number - Preço -->
+                <div class="md-form-field">
+                    <label class="md-label" for="prodPreco">
+                        <span class="required">*</span> Preço (R$)
+                    </label>
+                    <input type="number" id="prodPreco" class="md-input" placeholder="0,00" step="0.01" min="0">
+                </div>
 
-    <!-- FORMULÁRIO -->
-    <div class="card-criar">
+                <!-- Campo 3: Number - Estoque -->
+                <div class="md-form-field">
+                    <label class="md-label" for="prodEstoque">
+                        <span class="required">*</span> Quantidade em Estoque
+                    </label>
+                    <input type="number" id="prodEstoque" class="md-input" placeholder="0" min="0">
+                </div>
 
-        <div class="card-criar-header">
-            Formulário de Cadastro
-        </div>
+                <!-- Campo 4: Select - Categoria -->
+                <div class="md-form-field">
+                    <label class="md-label" for="prodCategoria">Categoria</label>
+                    <select id="prodCategoria" class="md-select">
+                        <option value="Eletrônicos">📱 Eletrônicos</option>
+                        <option value="Vestuário">👕 Vestuário</option>
+                        <option value="Alimentos">🍔 Alimentos</option>
+                        <option value="Móveis">🪑 Móveis</option>
+                        <option value="Livros">📚 Livros</option>
+                        <option value="Outros">📦 Outros</option>
+                    </select>
+                </div>
 
-        <div class="card-criar-body">
+                <!-- Campo 5: Date - Data de Validade -->
+                <div class="md-form-field">
+                    <label class="md-label" for="prodValidade">Data de Validade</label>
+                    <input type="date" id="prodValidade" class="md-input">
+                </div>
 
-            <!-- NOME -->
-            <div class="input-group">
-                <label>Nome do Produto *</label>
-                <input type="text" id="inputNome2" placeholder="Ex: Camiseta Azul">
-                <div class="field-error" id="erroNome2">
-                    Informe o nome do produto.
+                <!-- Campo 6: Radio Group - Status -->
+                <div class="md-form-field">
+                    <label class="md-label">Status do Produto</label>
+                    <div class="md-radio-group">
+                        <label class="md-radio">
+                            <input type="radio" name="status" value="active" checked> 
+                            <span>🟢 Ativo</span>
+                        </label>
+                        <label class="md-radio">
+                            <input type="radio" name="status" value="inactive"> 
+                            <span>🔴 Inativo</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Campo 7: Checkbox - Promoção -->
+                <div class="md-form-field md-form-field--full">
+                    <div class="md-checkbox-wrapper">
+                        <input type="checkbox" id="prodPromocao" class="md-checkbox">
+                        <label for="prodPromocao" class="md-label" style="cursor: pointer;">Em promoção (aplicar desconto automático)</label>
+                    </div>
+                </div>
+
+                <!-- Botões -->
+                <div class="md-button-group">
+                    <button class="md-button md-button--filled" id="btnSalvarProduto">💾 Salvar Produto</button>
+                    <button class="md-button md-button--outlined" id="btnLimparFormulario">🗑️ Limpar Formulário</button>
                 </div>
             </div>
-
-            <!-- PREÇO -->
-            <div class="input-group">
-                <label>Preço (R$) *</label>
-                <input type="number" id="inputPreco2" placeholder="0,00" min="0" step="0.01">
-                <div class="field-error" id="erroPreco2">
-                    Informe um preço válido.
-                </div>
-            </div>
-
-            <!-- ESTOQUE -->
-            <div class="input-group">
-                <label>Estoque *</label>
-                <input type="number" id="inputEstoque2" placeholder="0" min="0">
-                <div class="field-error" id="erroEstoque2">
-                    Informe a quantidade em estoque.
-                </div>
-            </div>
-
-            <!-- BOTÕES -->
-            <button class="btn-salvar" id="btnSalvar2">Salvar</button>
-            <button class="btn-cancelar" id="btnCancelar2">Limpar</button>
-
         </div>
     </div>
 

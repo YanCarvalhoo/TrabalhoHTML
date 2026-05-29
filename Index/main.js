@@ -1,557 +1,543 @@
-// ===============================
-// INICIALIZAÇÃO DO SISTEMA
-// Aguarda o DOM estar pronto
-// ===============================
+// ========================================
+// SISTEMA COMPLETO (MATERIAL DESIGN + NAVEGAÇÃO + ORDENAÇÃO + PAGINAÇÃO)
+// ========================================
+
+const STORAGE_KEY = 'mdc_produtos';
+let produtos = [];
+let deleteId = null;
+
+// Configuração de ordenação
+let sortConfig = {
+    column: 'nome',
+    direction: 'asc'
+};
+
+// Configuração de paginação
+let paginacaoConfig = {
+    rowsPerPage: 10,
+    currentPage: 1
+};
+
+// ========================================
+// 1. CARREGAR FRAGMENTOS HTML
+// ========================================
 document.addEventListener("DOMContentLoaded", async function () {
+    try {
+        await fetch('header.html')
+            .then(r => r.text())
+            .then(data => document.getElementById('header').innerHTML = data);
+        await fetch('main.html')
+            .then(r => r.text())
+            .then(data => document.getElementById('main').innerHTML = data);
+        await fetch('footer.html')
+            .then(r => r.text())
+            .then(data => document.getElementById('footer').innerHTML = data);
+    } catch (e) {
+        console.warn("Erro ao carregar fragments HTML.");
+    }
 
-    // ===============================
-    // CARREGAR HTMLs DINÂMICOS
-    // Ordem importa: header > main > footer
-    // ===============================
-    await fetch('header.html')
-        .then(r => r.text())
-        .then(data => document.getElementById('header').innerHTML = data);
-
-    await fetch('main.html')
-        .then(r => r.text())
-        .then(data => document.getElementById('main').innerHTML = data);
-
-    await fetch('footer.html')
-        .then(r => r.text())
-        .then(data => document.getElementById('footer').innerHTML = data);
-
-    // Após carregar todos os fragmentos HTML, inicia a lógica
     iniciarSistema();
 });
 
-
-// ===============================
-// FUNÇÃO PRINCIPAL DO SISTEMA
-// Toda a lógica fica aqui para
-// garantir que o DOM já foi montado
-// ===============================
+// ========================================
+// 2. FUNÇÃO PRINCIPAL
+// ========================================
 function iniciarSistema() {
+    carregarProdutos();
 
-    // ===============================
-    // CONFIGURAÇÕES
-    // ===============================
-    const STORAGE_KEY = 'sysprod_produtos'; // chave do localStorage
-
-    /** @type {Array} Lista de produtos em memória */
-    let produtos = carregarProdutos();
-
-    /** @type {number|null} ID do produto que será excluído pelo modal */
-    let idParaDeletar = null;
-
-
-    // ===============================
-    // USUÁRIO LOGADO (sessionStorage)
-    // Carrega o nome salvo no login
-    // ===============================
     const nomeUsuario = sessionStorage.getItem('usuarioLogado');
+    const nomeSpan = document.getElementById('nomeUsuario');
+    if (nomeUsuario && nomeSpan) nomeSpan.textContent = nomeUsuario;
 
-    if (nomeUsuario) {
-        const el = document.getElementById('nomeUsuario');
-        if (el) el.textContent = nomeUsuario;
-    }
-
-
-    // ===============================
-    // LOGO → RECARREGA A HOMEPAGE
-    // ===============================
     const logo = document.getElementById('logoLink');
-
     if (logo) {
-        logo.addEventListener('click', e => {
+        logo.addEventListener('click', (e) => {
             e.preventDefault();
-            location.reload(); // recarrega como a especificação exige
+            location.reload();
         });
     }
 
+    inicializarNavegacao();
 
-    // ===============================
-    // NAVEGAÇÃO ENTRE TELAS
-    // ===============================
+    const btnSalvar = document.getElementById('btnSalvarProduto');
+    if (btnSalvar) btnSalvar.addEventListener('click', salvarProduto);
 
-    /**
-     * Troca a tela ativa pelo id informado.
-     * Atualiza também o link ativo no menu.
-     * @param {string} screen — 'home' | 'produtos' | 'cadastrar'
-     */
-    function navegar(screen) {
+    const btnLimpar = document.getElementById('btnLimparFormulario');
+    if (btnLimpar) btnLimpar.addEventListener('click', limparFormulario);
 
-        // Remove classe .active de todas as telas e links
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-
-        // Ativa a tela correspondente
-        const tela = document.getElementById('screen-' + screen);
-        if (tela) tela.classList.add('active');
-
-        // Ativa o link do menu correspondente
-        const link = document.querySelector(`[data-screen="${screen}"]`);
-        if (link) link.classList.add('active');
-
-        // Ações específicas por tela
-        if (screen === 'produtos') renderTabela();
-        if (screen === 'cadastrar') limparForm2();
-    }
-
-    // Clique nos links do menu
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', e => {
-            e.preventDefault();
-            navegar(link.dataset.screen);
+    const modalOverlay = document.getElementById('modalOverlay');
+    const btnCancelDel = document.getElementById('btnCancelDel');
+    const btnConfirmDel = document.getElementById('btnConfirmDel');
+    if (modalOverlay && btnCancelDel && btnConfirmDel) {
+        btnCancelDel.addEventListener('click', fecharModal);
+        btnConfirmDel.addEventListener('click', excluirProdutoConfirmado);
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) fecharModal();
         });
-    });
-
-    // Clique nos cards da tela Home
-    document.querySelectorAll('[data-goto]').forEach(card => {
-        card.addEventListener('click', () => navegar(card.dataset.goto));
-    });
-
-
-    // ===============================
-    // BOTÕES — FORMULÁRIO PRINCIPAL
-    // (tela de listagem de produtos)
-    // ===============================
-
-    // Abre o formulário para novo produto
-    document.getElementById('btnNovoProduto')?.addEventListener('click', () => {
-        const card = document.getElementById('cardCriar');
-        card.style.display = 'block';
-        limparForm();
-        document.getElementById('editandoId').value = '';
-        document.getElementById('formTitulo').textContent = 'Novo Produto';
-    });
-
-    // Salvar (form principal)
-    document.getElementById('btnSalvar')?.addEventListener('click', () => {
-        salvarProduto(
-            document.getElementById('inputNome'),
-            document.getElementById('inputPreco'),
-            document.getElementById('inputEstoque'),
-            document.getElementById('erroNome'),
-            document.getElementById('erroPreco'),
-            document.getElementById('erroEstoque'),
-            document.getElementById('editandoId').value || null
-        );
-    });
-
-    // Cancelar / Limpar (form principal)
-    document.getElementById('btnCancelar')?.addEventListener('click', () => {
-        limparForm();
-        document.getElementById('editandoId').value = '';
-        document.getElementById('cardCriar').style.display = 'none';
-    });
-
-
-    // ===============================
-    // BOTÕES — FORMULÁRIO SECUNDÁRIO
-    // (tela "Cadastrar" do menu)
-    // ===============================
-
-    // Salvar (form secundário)
-    document.getElementById('btnSalvar2')?.addEventListener('click', () => {
-        salvarProduto(
-            document.getElementById('inputNome2'),
-            document.getElementById('inputPreco2'),
-            document.getElementById('inputEstoque2'),
-            document.getElementById('erroNome2'),
-            document.getElementById('erroPreco2'),
-            document.getElementById('erroEstoque2'),
-            null // sempre cria novo produto
-        );
-    });
-
-    // Limpar (form secundário)
-    document.getElementById('btnCancelar2')?.addEventListener('click', limparForm2);
-
-
-    // ===============================
-    // MODAL DE EXCLUSÃO
-    // ===============================
-
-    // Fechar modal sem excluir
-    document.getElementById('btnCancelDel')?.addEventListener('click', () => {
-        fecharModal();
-    });
-
-    // Confirmar exclusão
-    document.getElementById('btnConfirmDel')?.addEventListener('click', () => {
-
-        if (idParaDeletar !== null) {
-
-            // Remove o produto do array
-            produtos = produtos.filter(p => p.id !== idParaDeletar);
-
-            salvarProdutosStorage();
-            renderTabela();
-
-            toast('Produto excluído com sucesso.', 'error');
-        }
-
-        fecharModal();
-    });
-
-    // Fecha modal ao clicar fora da caixa
-    document.getElementById('modalOverlay')?.addEventListener('click', e => {
-        if (e.target.id === 'modalOverlay') fecharModal();
-    });
-
-    /**
-     * Fecha o modal e limpa o id pendente.
-     */
-    function fecharModal() {
-        document.getElementById('modalOverlay').style.display = 'none';
-        idParaDeletar = null;
     }
 
-
-    // ===============================
-    // SALVAR PRODUTO (CREATE / UPDATE)
-    // ===============================
-
-    /**
-     * Valida os campos e salva (cria ou edita) um produto.
-     * @param {HTMLElement} inputNome
-     * @param {HTMLElement} inputPreco
-     * @param {HTMLElement} inputEstoque
-     * @param {HTMLElement} erroNome
-     * @param {HTMLElement} erroPreco
-     * @param {HTMLElement} erroEstoque
-     * @param {string|null}  editId — id do produto em edição, ou null para criar
-     */
-    function salvarProduto(inputNome, inputPreco, inputEstoque, erroNome, erroPreco, erroEstoque, editId) {
-
-        const nome    = inputNome.value.trim();
-        const preco   = parseFloat(inputPreco.value);
-        const estoque = parseInt(inputEstoque.value);
-
-        let valido = true;
-
-        // — Limpa erros anteriores —
-        clearFieldError(inputNome,    erroNome);
-        clearFieldError(inputPreco,   erroPreco);
-        clearFieldError(inputEstoque, erroEstoque);
-
-        // — Valida nome —
-        if (!nome) {
-            showFieldError(inputNome, erroNome, 'Informe o nome do produto.');
-            valido = false;
-        }
-
-        // — Valida preço —
-        if (isNaN(preco) || preco < 0) {
-            showFieldError(inputPreco, erroPreco, 'Informe um preço válido (ex: 29.90).');
-            valido = false;
-        }
-
-        // — Valida estoque —
-        if (isNaN(estoque) || estoque < 0) {
-            showFieldError(inputEstoque, erroEstoque, 'Informe uma quantidade válida.');
-            valido = false;
-        }
-
-        if (!valido) return;
-
-        // ===============================
-        // EDITAR produto existente
-        // ===============================
-        if (editId) {
-            const idx = produtos.findIndex(p => p.id === parseInt(editId));
-
-            if (idx !== -1) {
-                produtos[idx] = { ...produtos[idx], nome, preco, estoque };
-                toast('Produto atualizado com sucesso.', 'success');
-            }
-
-            // Fecha o formulário e limpa o id de edição
-            document.getElementById('editandoId').value = '';
-            document.getElementById('cardCriar').style.display = 'none';
-        }
-        // ===============================
-        // CRIAR novo produto
-        // ===============================
-        else {
-            produtos.push({
-                id: gerarId(),
-                nome,
-                preco,
-                estoque
-            });
-
-            toast('Produto cadastrado com sucesso.', 'success');
-        }
-
-        salvarProdutosStorage();
-
-        // Limpa campos do formulário usado
-        inputNome.value    = '';
-        inputPreco.value   = '';
-        inputEstoque.value = '';
-
-        // Atualiza a tabela se estiver na tela de produtos
-        renderTabela();
-    }
-
-
-    // ===============================
-    // EDITAR PRODUTO
-    // Carrega os dados no formulário principal
-    // ===============================
-
-    /**
-     * Preenche o formulário principal com os dados do produto
-     * e rola a tela até o formulário.
-     * @param {number} id
-     */
-    function editarProduto(id) {
-
-        const produto = produtos.find(p => p.id === id);
-        if (!produto) return;
-
-        // Mostra o formulário
-        const card = document.getElementById('cardCriar');
-        card.style.display = 'block';
-
-        // Preenche os campos
-        document.getElementById('inputNome').value    = produto.nome;
-        document.getElementById('inputPreco').value   = produto.preco;
-        document.getElementById('inputEstoque').value = produto.estoque;
-        document.getElementById('editandoId').value   = produto.id;
-
-        // Atualiza o título do card
-        document.getElementById('formTitulo').textContent = 'Editar Produto';
-
-        // Rola até o formulário
-        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-
-    // ===============================
-    // ABRIR MODAL DE EXCLUSÃO
-    // ===============================
-
-    /**
-     * Exibe o modal de confirmação de exclusão.
-     * @param {number} id
-     */
-    function abrirModalExclusao(id) {
-
-        const produto = produtos.find(p => p.id === id);
-        if (!produto) return;
-
-        idParaDeletar = id;
-
-        document.getElementById('modalProdutoNome').textContent = produto.nome;
-        document.getElementById('modalOverlay').style.display   = 'flex';
-    }
-
-
-    // ===============================
-    // LIMPAR FORMULÁRIOS
-    // ===============================
-
-    /** Limpa o formulário principal (tela Produtos) */
-    function limparForm() {
-        ['inputNome', 'inputPreco', 'inputEstoque'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.value = '';
-        });
-
-        // Remove erros visuais
-        clearFieldError(document.getElementById('inputNome'),    document.getElementById('erroNome'));
-        clearFieldError(document.getElementById('inputPreco'),   document.getElementById('erroPreco'));
-        clearFieldError(document.getElementById('inputEstoque'), document.getElementById('erroEstoque'));
-    }
-
-    /** Limpa o formulário secundário (tela Cadastrar) */
-    function limparForm2() {
-        ['inputNome2', 'inputPreco2', 'inputEstoque2'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.value = '';
-        });
-
-        clearFieldError(document.getElementById('inputNome2'),    document.getElementById('erroNome2'));
-        clearFieldError(document.getElementById('inputPreco2'),   document.getElementById('erroPreco2'));
-        clearFieldError(document.getElementById('inputEstoque2'), document.getElementById('erroEstoque2'));
-    }
-
-
-    // ===============================
-    // RENDERIZAÇÃO DA TABELA
-    // ===============================
-
-    /**
-     * Atualiza o <tbody> da tabela com os dados de `produtos`.
-     * Gera botões de Editar e Excluir para cada linha.
-     */
-    function renderTabela() {
-
-        const tbody = document.getElementById('tabelaProdutos');
-        if (!tbody) return;
-
-        if (produtos.length === 0) {
-            // Mensagem de lista vazia
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="5" style="text-align:center; color:var(--muted); padding:32px;">
-                        Nenhum produto cadastrado. Clique em <strong>+ Novo Produto</strong> para começar.
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        // Formata cada produto como uma linha da tabela
-        tbody.innerHTML = produtos.map(p => `
-            <tr>
-                <td data-label="ID">#${p.id}</td>
-                <td data-label="Produto">${escapeHtml(p.nome)}</td>
-                <td data-label="Preço">R$ ${Number(p.preco).toFixed(2)}</td>
-                <td data-label="Estoque">${p.estoque} un.</td>
-                <td data-label="Ações" class="td-acoes">
-                    <button
-                        class="btn-editar"
-                        onclick="editarProdutoGlobal(${p.id})"
-                        title="Editar produto"
-                        aria-label="Editar produto ${escapeHtml(p.nome)}"
-                    >
-                        ✏️ Editar
-                    </button>
-                    <button
-                        class="btn-excluir"
-                        onclick="excluirProdutoGlobal(${p.id})"
-                        title="Excluir produto"
-                        aria-label="Excluir produto ${escapeHtml(p.nome)}"
-                    >
-                        🗑️ Excluir
-                    </button>
-                </td>
-            </tr>
-        `).join('');
-    }
-
-
-    // ===============================
-    // EXPÕE FUNÇÕES AO ESCOPO GLOBAL
-    // Necessário para os onclick inline da tabela
-    // ===============================
-    window.editarProdutoGlobal  = editarProduto;
-    window.excluirProdutoGlobal = abrirModalExclusao;
-
-
-    // ===============================
-    // LOCAL STORAGE
-    // ===============================
-
-    /** Persiste o array de produtos */
-    function salvarProdutosStorage() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(produtos));
-    }
-
-    /**
-     * Carrega produtos do localStorage.
-     * @returns {Array}
-     */
-    function carregarProdutos() {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    }
-
-
-    // ===============================
-    // TOAST (NOTIFICAÇÃO FLUTUANTE)
-    // ===============================
-
-    /**
-     * Exibe uma notificação flutuante temporária.
-     * @param {string} msg      — texto da mensagem
-     * @param {string} tipo     — 'success' | 'error' | 'info'
-     */
-    function toast(msg, tipo = 'success') {
-
-        const container = document.getElementById('toastContainer');
-        if (!container) return;
-
-        const el = document.createElement('div');
-        el.className = `toast toast-${tipo}`;
-        el.textContent = msg;
-
-        el.setAttribute('role', 'alert');
-        el.setAttribute('aria-live', 'polite');
-
-        container.appendChild(el);
-
-        // Anima entrada
-        requestAnimationFrame(() => el.classList.add('show'));
-
-        // Remove após 3 segundos
-        setTimeout(() => {
-            el.classList.remove('show');
-            el.addEventListener('transitionend', () => el.remove());
-        }, 3000);
-    }
-
-
-    // ===============================
-    // FUNÇÕES DE ERRO DE CAMPO
-    // ===============================
-
-    /**
-     * Marca campo como inválido e exibe mensagem de erro.
-     * @param {HTMLElement} inputEl
-     * @param {HTMLElement} errEl
-     * @param {string}      msg
-     */
-    function showFieldError(inputEl, errEl, msg) {
-        if (!inputEl || !errEl) return;
-        inputEl.classList.add('error-field');
-        errEl.textContent = msg;
-        errEl.classList.add('show');
-    }
-
-    /**
-     * Remove o estado de erro de um campo.
-     * @param {HTMLElement} inputEl
-     * @param {HTMLElement} errEl
-     */
-    function clearFieldError(inputEl, errEl) {
-        if (!inputEl || !errEl) return;
-        inputEl.classList.remove('error-field');
-        errEl.classList.remove('show');
-    }
-
-
-    // ===============================
-    // UTILITÁRIOS
-    // ===============================
-
-    /**
-     * Gera um ID numérico único baseado no timestamp.
-     * @returns {number}
-     */
-    function gerarId() {
-        return Date.now();
-    }
-
-    /**
-     * Escapa caracteres HTML para evitar XSS na tabela.
-     * @param {string} str
-     * @returns {string}
-     */
-    function escapeHtml(str) {
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;');
-    }
-
-
-    // ===============================
-    // INICIALIZAÇÃO FINAL
-    // Renderiza a tabela ao carregar
-    // ===============================
-    renderTabela();
+    adicionarColunaValidade();
+    configurarOrdenacao();
+    configurarPaginacao();
+    renderizarTabela();
 }
+
+// ========================================
+// 3. NAVEGAÇÃO
+// ========================================
+function inicializarNavegacao() {
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const screen = link.dataset.screen;
+            if (screen) navegar(screen);
+        });
+    });
+
+    document.querySelectorAll('[data-goto]').forEach(card => {
+        card.addEventListener('click', () => {
+            const tela = card.dataset.goto;
+            if (tela) navegar(tela);
+        });
+    });
+}
+
+function navegar(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+
+    const tela = document.getElementById(`screen-${screenId}`);
+    if (tela) tela.classList.add('active');
+
+    const linkAtivo = document.querySelector(`.nav-link[data-screen="${screenId}"]`);
+    if (linkAtivo) linkAtivo.classList.add('active');
+
+    if (screenId === 'produtos') {
+        paginacaoConfig.currentPage = 1;
+        renderizarTabela();
+    }
+}
+
+// ========================================
+// 4. CRUD E ORDENAÇÃO
+// ========================================
+function carregarProdutos() {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+        produtos = JSON.parse(stored);
+    } else {
+        produtos = [
+            { id: Date.now() + 1, nome: "Camiseta Oversized", preco: 89.90, estoque: 45, categoria: "Vestuário", validade: "2026-12-31", status: "active", promocao: true },
+            { id: Date.now() + 2, nome: "Fone Bluetooth", preco: 199.90, estoque: 12, categoria: "Eletrônicos", validade: "", status: "active", promocao: false },
+            { id: Date.now() + 3, nome: "Banana", preco: 3.50, estoque: 200, categoria: "Alimentos", validade: "2026-05-20", status: "active", promocao: true },
+            { id: Date.now() + 4, nome: "Cadeira Gamer", preco: 850.00, estoque: 8, categoria: "Móveis", validade: "", status: "inactive", promocao: false },
+            { id: Date.now() + 5, nome: "Livro JavaScript", preco: 79.90, estoque: 30, categoria: "Livros", validade: "", status: "active", promocao: true },
+            { id: Date.now() + 6, nome: "Smartphone X", preco: 1599.00, estoque: 5, categoria: "Eletrônicos", validade: "", status: "active", promocao: false },
+            { id: Date.now() + 7, nome: "Camisa Polo", preco: 49.90, estoque: 120, categoria: "Vestuário", validade: "", status: "active", promocao: true },
+            { id: Date.now() + 8, nome: "Teclado Mecânico", preco: 299.90, estoque: 15, categoria: "Eletrônicos", validade: "", status: "inactive", promocao: false }
+        ];
+        salvarProdutosStorage();
+    }
+}
+
+function salvarProdutosStorage() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(produtos));
+}
+
+function gerarId() {
+    return Date.now();
+}
+
+function getProdutosOrdenados() {
+    const copia = [...produtos];
+    const { column, direction } = sortConfig;
+    if (!column) return copia;
+
+    copia.sort((a, b) => {
+        let valorA = a[column];
+        let valorB = b[column];
+
+        switch (column) {
+            case 'preco':
+            case 'estoque':
+                valorA = Number(valorA);
+                valorB = Number(valorB);
+                break;
+            case 'validade':
+                valorA = valorA ? new Date(valorA) : new Date('9999-12-31');
+                valorB = valorB ? new Date(valorB) : new Date('9999-12-31');
+                break;
+            case 'status':
+                valorA = a.status === 'active' ? 'Ativo' : 'Inativo';
+                valorB = b.status === 'active' ? 'Ativo' : 'Inativo';
+                break;
+            case 'promocao':
+                valorA = a.promocao ? 1 : 0;
+                valorB = b.promocao ? 1 : 0;
+                break;
+            default:
+                valorA = (valorA || '').toString().toLowerCase();
+                valorB = (valorB || '').toString().toLowerCase();
+                break;
+        }
+
+        if (valorA < valorB) return direction === 'asc' ? -1 : 1;
+        if (valorA > valorB) return direction === 'asc' ? 1 : -1;
+        return 0;
+    });
+    return copia;
+}
+
+function renderizarTabela() {
+    const tbody = document.getElementById('tabelaProdutos');
+    if (!tbody) return;
+
+    const produtosOrdenados = getProdutosOrdenados();
+    const totalProdutos = produtosOrdenados.length;
+    const totalPages = Math.ceil(totalProdutos / paginacaoConfig.rowsPerPage);
+    
+    if (paginacaoConfig.currentPage > totalPages && totalPages > 0) {
+        paginacaoConfig.currentPage = totalPages;
+    }
+    
+    const start = (paginacaoConfig.currentPage - 1) * paginacaoConfig.rowsPerPage;
+    const end = start + paginacaoConfig.rowsPerPage;
+    const produtosPaginados = produtosOrdenados.slice(start, end);
+
+    if (produtosPaginados.length === 0 && totalProdutos === 0) {
+        tbody.innerHTML = `<tr><td colspan="10" class="md-empty-state">📦 Nenhum produto cadastrado. Utilize o formulário acima para começar.</td></tr>`;
+        atualizarPaginacaoUI(0, 0);
+        return;
+    }
+
+    if (produtosPaginados.length === 0 && totalProdutos > 0) {
+        paginacaoConfig.currentPage = totalPages;
+        renderizarTabela();
+        return;
+    }
+
+    tbody.innerHTML = produtosPaginados.map(prod => `
+        <tr>
+            <td><input type="checkbox" class="md-checkbox-table" data-id="${prod.id}"></td>
+            <td>#${prod.id.toString().slice(-6)}</td>
+            <td><strong>${escapeHtml(prod.nome)}</strong></td>
+            <td>${escapeHtml(prod.categoria || 'Outros')}</td>
+            <td>R$ ${prod.preco.toFixed(2)}</td>
+            <td>${prod.estoque} un.</td>
+            <td>${prod.validade ? formatarData(prod.validade) : '—'}</td>
+            <td>
+                <span class="md-badge-status ${prod.status === 'active' ? 'md-badge-status--active' : 'md-badge-status--inactive'}">
+                    ${prod.status === 'active' ? '🟢 Ativo' : '🔴 Inativo'}
+                </span>
+            </td>
+            <td>${prod.promocao ? '🏷️ Sim' : '❌ Não'}</td>
+            <td class="md-action-buttons">
+                <button class="md-icon-button md-icon-button--edit" onclick="window.editarProduto(${prod.id})" title="Editar">✏️</button>
+                <button class="md-icon-button md-icon-button--delete" onclick="window.confirmarExclusao(${prod.id}, '${escapeHtml(prod.nome)}')" title="Excluir">🗑️</button>
+            </td>
+        </tr>
+    `).join('');
+
+    initSelectAll();
+    atualizarIndicadoresOrdenacao();
+    atualizarPaginacaoUI(totalProdutos, totalPages);
+}
+
+function atualizarPaginacaoUI(totalProdutos, totalPages) {
+    const infoSpan = document.getElementById('paginationInfo');
+    const currentPageSpan = document.getElementById('currentPage');
+    const totalPagesSpan = document.getElementById('totalPages');
+    const firstBtn = document.getElementById('firstPageBtn');
+    const prevBtn = document.getElementById('prevPageBtn');
+    const nextBtn = document.getElementById('nextPageBtn');
+    const lastBtn = document.getElementById('lastPageBtn');
+
+    if (infoSpan) {
+        const start = (paginacaoConfig.currentPage - 1) * paginacaoConfig.rowsPerPage + 1;
+        const end = Math.min(start + paginacaoConfig.rowsPerPage - 1, totalProdutos);
+        if (totalProdutos === 0) {
+            infoSpan.textContent = '0 de 0';
+        } else {
+            infoSpan.textContent = `${start}-${end} de ${totalProdutos}`;
+        }
+    }
+
+    if (currentPageSpan) currentPageSpan.textContent = paginacaoConfig.currentPage;
+    if (totalPagesSpan) totalPagesSpan.textContent = totalPages || 1;
+
+    if (firstBtn) firstBtn.disabled = paginacaoConfig.currentPage === 1 || totalProdutos === 0;
+    if (prevBtn) prevBtn.disabled = paginacaoConfig.currentPage === 1 || totalProdutos === 0;
+    if (nextBtn) nextBtn.disabled = paginacaoConfig.currentPage === totalPages || totalProdutos === 0;
+    if (lastBtn) lastBtn.disabled = paginacaoConfig.currentPage === totalPages || totalProdutos === 0;
+}
+
+function irParaPagina(page, totalPages) {
+    if (page < 1) page = 1;
+    if (page > totalPages) page = totalPages;
+    if (page !== paginacaoConfig.currentPage) {
+        paginacaoConfig.currentPage = page;
+        renderizarTabela();
+    }
+}
+
+function configurarPaginacao() {
+    const rowsPerPageSelect = document.getElementById('rowsPerPage');
+    if (rowsPerPageSelect) {
+        rowsPerPageSelect.value = paginacaoConfig.rowsPerPage;
+        rowsPerPageSelect.addEventListener('change', (e) => {
+            paginacaoConfig.rowsPerPage = parseInt(e.target.value);
+            paginacaoConfig.currentPage = 1;
+            renderizarTabela();
+        });
+    }
+
+    const firstBtn = document.getElementById('firstPageBtn');
+    const prevBtn = document.getElementById('prevPageBtn');
+    const nextBtn = document.getElementById('nextPageBtn');
+    const lastBtn = document.getElementById('lastPageBtn');
+
+    if (firstBtn) firstBtn.addEventListener('click', () => {
+        const total = Math.ceil(getProdutosOrdenados().length / paginacaoConfig.rowsPerPage);
+        irParaPagina(1, total);
+    });
+    if (prevBtn) prevBtn.addEventListener('click', () => {
+        const total = Math.ceil(getProdutosOrdenados().length / paginacaoConfig.rowsPerPage);
+        irParaPagina(paginacaoConfig.currentPage - 1, total);
+    });
+    if (nextBtn) nextBtn.addEventListener('click', () => {
+        const total = Math.ceil(getProdutosOrdenados().length / paginacaoConfig.rowsPerPage);
+        irParaPagina(paginacaoConfig.currentPage + 1, total);
+    });
+    if (lastBtn) lastBtn.addEventListener('click', () => {
+        const total = Math.ceil(getProdutosOrdenados().length / paginacaoConfig.rowsPerPage);
+        irParaPagina(total, total);
+    });
+}
+
+// ========================================
+// 5. CONFIGURAÇÃO DE ORDENAÇÃO
+// ========================================
+function adicionarColunaValidade() {
+    const theadRow = document.querySelector('.md-data-table thead tr');
+    if (!theadRow) return;
+
+    let ths = Array.from(theadRow.querySelectorAll('th'));
+    const existeValidade = ths.some(th => th.textContent.trim() === 'Validade');
+    if (!existeValidade) {
+        const newTh = document.createElement('th');
+        newTh.textContent = 'Validade';
+        newTh.setAttribute('data-column', 'validade');
+        newTh.style.cursor = 'pointer';
+        const statusIndex = ths.findIndex(th => th.textContent.trim() === 'Status');
+        if (statusIndex !== -1) {
+            theadRow.insertBefore(newTh, ths[statusIndex]);
+        } else {
+            theadRow.insertBefore(newTh, theadRow.lastElementChild);
+        }
+    }
+
+    const allThs = document.querySelectorAll('.md-data-table thead th');
+    const mapaTextoParaColuna = {
+        'id': 'id', 'produto': 'nome', 'categoria': 'categoria',
+        'preço': 'preco', 'estoque': 'estoque', 'validade': 'validade',
+        'status': 'status', 'promoção': 'promocao'
+    };
+    allThs.forEach(th => {
+        if (!th.getAttribute('data-column')) {
+            const texto = th.textContent.trim().toLowerCase();
+            const coluna = mapaTextoParaColuna[texto];
+            if (coluna) th.setAttribute('data-column', coluna);
+        }
+    });
+}
+
+function configurarOrdenacao() {
+    const container = document.querySelector('.md-data-table');
+    if (!container) return;
+
+    container.addEventListener('click', (e) => {
+        const th = e.target.closest('th');
+        if (!th) return;
+        const parent = th.parentNode;
+        const colunaIndex = Array.from(parent.children).indexOf(th);
+        if (colunaIndex === parent.children.length - 1) return;
+
+        let colunaNome = th.getAttribute('data-column');
+        if (!colunaNome) return;
+
+        if (sortConfig.column === colunaNome) {
+            sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc';
+        } else {
+            sortConfig.column = colunaNome;
+            sortConfig.direction = 'asc';
+        }
+        paginacaoConfig.currentPage = 1;
+        renderizarTabela();
+    });
+}
+
+function atualizarIndicadoresOrdenacao() {
+    const ths = document.querySelectorAll('.md-data-table thead th');
+    ths.forEach(th => {
+        const oldArrow = th.querySelector('.sort-arrow');
+        if (oldArrow) oldArrow.remove();
+
+        const coluna = th.getAttribute('data-column');
+        if (coluna && sortConfig.column === coluna) {
+            const arrow = document.createElement('span');
+            arrow.className = 'sort-arrow';
+            arrow.innerHTML = sortConfig.direction === 'asc' ? ' ▲' : ' ▼';
+            th.appendChild(arrow);
+        }
+    });
+}
+
+// ========================================
+// 6. CRUD (SALVAR, EDITAR, EXCLUIR)
+// ========================================
+function salvarProduto() {
+    const nome = document.getElementById('prodNome')?.value.trim();
+    const preco = parseFloat(document.getElementById('prodPreco')?.value);
+    const estoque = parseInt(document.getElementById('prodEstoque')?.value);
+    const categoria = document.getElementById('prodCategoria')?.value;
+    const validade = document.getElementById('prodValidade')?.value;
+    const statusRadio = document.querySelector('input[name="status"]:checked');
+    const status = statusRadio ? statusRadio.value : 'active';
+    const promocao = document.getElementById('prodPromocao')?.checked || false;
+
+    if (!nome) return mostrarToast('❌ Informe o nome do produto', 'error');
+    if (isNaN(preco) || preco < 0) return mostrarToast('❌ Informe um preço válido', 'error');
+    if (isNaN(estoque) || estoque < 0) return mostrarToast('❌ Informe a quantidade em estoque', 'error');
+
+    const novoProduto = {
+        id: gerarId(), nome, preco, estoque,
+        categoria: categoria || 'Outros',
+        validade: validade || '',
+        status, promocao
+    };
+
+    produtos.push(novoProduto);
+    salvarProdutosStorage();
+    paginacaoConfig.currentPage = 1;
+    renderizarTabela();
+    limparFormulario();
+    mostrarToast('✅ Produto cadastrado com sucesso!', 'success');
+}
+
+function editarProduto(id) {
+    const produto = produtos.find(p => p.id === id);
+    if (!produto) return;
+
+    document.getElementById('prodNome').value = produto.nome;
+    document.getElementById('prodPreco').value = produto.preco;
+    document.getElementById('prodEstoque').value = produto.estoque;
+    document.getElementById('prodCategoria').value = produto.categoria || 'Outros';
+    document.getElementById('prodValidade').value = produto.validade || '';
+    const radio = document.querySelector(`input[name="status"][value="${produto.status}"]`);
+    if (radio) radio.checked = true;
+    document.getElementById('prodPromocao').checked = produto.promocao || false;
+
+    produtos = produtos.filter(p => p.id !== id);
+    salvarProdutosStorage();
+
+    navegar('cadastrar');
+    setTimeout(() => {
+        document.querySelector('.md-card')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+    mostrarToast('✏️ Edite os campos e clique em Salvar', 'info');
+}
+
+function confirmarExclusao(id, nome) {
+    deleteId = id;
+    const modalProdutoNome = document.getElementById('modalProdutoNome');
+    if (modalProdutoNome) modalProdutoNome.textContent = nome;
+    const modal = document.getElementById('modalOverlay');
+    if (modal) modal.style.display = 'flex';
+}
+
+function excluirProdutoConfirmado() {
+    if (deleteId !== null) {
+        produtos = produtos.filter(p => p.id !== deleteId);
+        salvarProdutosStorage();
+        const totalPages = Math.ceil(produtos.length / paginacaoConfig.rowsPerPage);
+        if (paginacaoConfig.currentPage > totalPages && totalPages > 0) {
+            paginacaoConfig.currentPage = totalPages;
+        }
+        renderizarTabela();
+        mostrarToast('🗑️ Produto excluído com sucesso', 'error');
+        deleteId = null;
+    }
+    fecharModal();
+}
+
+function fecharModal() {
+    const modal = document.getElementById('modalOverlay');
+    if (modal) modal.style.display = 'none';
+    deleteId = null;
+}
+
+function limparFormulario() {
+    document.getElementById('prodNome').value = '';
+    document.getElementById('prodPreco').value = '';
+    document.getElementById('prodEstoque').value = '';
+    document.getElementById('prodCategoria').value = 'Eletrônicos';
+    document.getElementById('prodValidade').value = '';
+    const radioAtivo = document.querySelector('input[name="status"][value="active"]');
+    if (radioAtivo) radioAtivo.checked = true;
+    document.getElementById('prodPromocao').checked = false;
+}
+
+function initSelectAll() {
+    const selectAll = document.getElementById('selectAllCheckbox');
+    if (!selectAll) return;
+    const newSelectAll = selectAll.cloneNode(true);
+    selectAll.parentNode.replaceChild(newSelectAll, selectAll);
+    newSelectAll.addEventListener('change', function () {
+        const checkboxes = document.querySelectorAll('#tabelaProdutos .md-checkbox-table');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+}
+
+// ========================================
+// 7. TOAST
+// ========================================
+function mostrarToast(mensagem, tipo = 'success') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${tipo}`;
+    toast.textContent = mensagem;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'polite');
+
+    container.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('show'));
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        toast.addEventListener('transitionend', () => toast.remove(), { once: true });
+    }, 3000);
+}
+
+// ========================================
+// 8. UTILITÁRIOS
+// ========================================
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function (m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
+function formatarData(dataISO) {
+    if (!dataISO) return '—';
+    const [ano, mes, dia] = dataISO.split('-');
+    return `${dia}/${mes}/${ano}`;
+}
+
+window.editarProduto = editarProduto;
+window.confirmarExclusao = confirmarExclusao;
